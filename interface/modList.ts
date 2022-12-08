@@ -21,6 +21,14 @@ export interface mod_detail{
     tag:string[], //tag system for seach if mod of similar tag is already install to prevent conflict
 }
 
+export interface mod_detail_optional{
+    description?:string,
+    version?:string,
+    url?:string,
+    refFolder?:string,  //in case this is a ref to the mod folder
+    tag?:string[], //tag system for seach if mod of similar tag is already install to prevent conflict
+}
+
 // interface rand{
 
 // }
@@ -58,10 +66,12 @@ export interface modListCreateDisplay {
 }
 
 export interface modListDisplay {
+    id:string,
     name:string,
     displayDependency?:boolean,
     displayMod?:boolean,
     dependency?:modListDisplay[],
+    displayModDetail?:boolean
     description?:string,
     version?:string,
     url?:string,

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import { readdir } from "fs/promises";
 import _ from "lodash";
-import { setting_location_config } from '../../setting/config';
+import { setting_location_config } from '../../config/config';
 
 const apiRoute = nextConnect<NextApiRequest, NextApiResponse>({
     //error

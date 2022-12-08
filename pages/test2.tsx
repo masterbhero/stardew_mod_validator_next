@@ -3,7 +3,7 @@ import fs from "fs";
 import { readdir } from "fs/promises";
 import _ from "lodash";
 import { useEffect, useState } from "react";
-import { lookup_list_config, setting_location_config } from "../setting/config";
+import { lookup_list_config, setting_location_config } from "../config/config";
 import { lookupSetting } from "../functions/lookup/setting-lookup";
 import DisplayActivatedMenu from "../components/displays/display-activated-menu";
 import ModView3, {

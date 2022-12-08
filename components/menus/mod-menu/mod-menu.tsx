@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import { mode_menu_menulist } from "../../../setting/config"
+import { mode_menu_menulist } from "../../../config/config"
 import BorderStyles from '../../../styles/animations/border.module.scss'
 import ModMenuCreate from "./mod-menu-menu/create"
 import ModMenuCreate2 from "./mod-menu-menu/create-2"

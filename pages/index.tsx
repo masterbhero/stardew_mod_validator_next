@@ -133,7 +133,7 @@ interface propsTypeIndexPage{
     set_lookup_result(props.file_result)
 
     //* set modlistmenu for
-    set_modListJSX(getModListJSXFileResult(props.file_result))
+    set_modListJSX(getModListJSXFileResult(props.file_result,ReloadMod))
 
     //* init menuNameState
     set_menuNameState(menu_list[0].name)
@@ -194,7 +194,7 @@ interface propsTypeIndexPage{
     const getModListResult = await getRequest(`./api/get-setting`,search_params)
 
     if(getModListResult.status){
-      set_modListJSX(getModListJSXModList(getModListResult.data.modlist))
+      set_modListJSX(getModListJSXModList(getModListResult.data.modlist,ReloadMod))
     }
     else{
       alert('reload fail')

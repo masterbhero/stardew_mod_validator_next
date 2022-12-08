@@ -1,4 +1,4 @@
-import { lookup_list_config_create } from "../../setting/config"
+import { lookup_list_config_create } from "../../config/config"
   import _ from "lodash";
 import { lookupSetting } from "../lookup/setting-lookup";
   

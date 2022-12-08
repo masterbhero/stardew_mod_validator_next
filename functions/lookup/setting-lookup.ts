@@ -1,7 +1,7 @@
 import {
   lookup_list_config,
   setting_location_config,
-} from "../../setting/config";
+} from "../../config/config";
 import fs from "fs";
 import { readdir } from "fs/promises";
 import _ from "lodash";

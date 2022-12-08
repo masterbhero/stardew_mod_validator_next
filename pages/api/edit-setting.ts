@@ -4,7 +4,7 @@ import fs, { writeFileSync } from "fs";
 import { readdir } from "fs/promises";
 import _ from "lodash";
 import { lookupSetting } from '../../functions/lookup/setting-lookup';
-import { setting_location_config } from '../../setting/config';
+import { setting_location_config } from '../../config/config';
 
 const apiRoute = nextConnect<NextApiRequest, NextApiResponse>({
     //error
