@@ -1,0 +1,28 @@
+
+.button{
+    @apply tw-px-4 tw-py-1 tw-border-2  tw-rounded-lg tw-text-white ;
+
+    &.edit{
+        @apply tw-border-[#B09500] tw-bg-[#e3c800];
+    }
+
+    &.remove{
+        @apply tw-border-[#B20000] tw-bg-[#e51400];
+    }
+}
+
+.name{
+    @apply tw-border-2 tw-px-4 tw-py-1 tw-rounded-md;
+
+    &.done{
+        @apply tw-border-[#005700] tw-bg-[#008a00];  
+    }
+
+    &.notdone{
+        @apply tw-border-[#B09500] tw-bg-[#e3c800];  
+    }
+
+    &.notinstalled{
+        @apply tw-border-[#B20000] tw-bg-[#e51400];    
+    }
+}

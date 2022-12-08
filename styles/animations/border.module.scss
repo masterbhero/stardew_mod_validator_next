@@ -1,0 +1,875 @@
+// body {
+// 	margin: 0;
+// 	padding: 0;
+// 	background-color: #000;
+// }
+
+.block {
+  position: relative;
+  // margin: 300px auto 0;
+  width: 500px;
+  height: 250px;
+  // background: linear-gradient(0deg, #000, #272727);
+}
+
+.block:before,
+.block:after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  background: linear-gradient(
+    45deg,
+    #fb0094,
+    #0000ff,
+    #00ff00,
+    #ffff00,
+    #ff0000,
+    #fb0094,
+    #0000ff,
+    #00ff00,
+    #ffff00,
+    #ff0000
+  );
+  // background-size: 400%;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: -1;
+  // animation: steam 20s linear infinite;
+}
+
+@keyframes steam {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+// .block:after {
+// 	filter: blur(50px);
+// }
+
+.rainbow-border {
+	animation: rainbow-border 60s linear infinite;
+}
+
+.rainbow-border-text{
+  animation: rainbow-border 60s linear infinite , rainbow-color 60s linear infinite;
+}
+
+@keyframes rainbow-border {
+  0% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  1% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  2% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  3% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  4% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  5% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  6% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  7% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  8% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  9% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  10% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  11% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  12% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  13% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  14% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  15% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  16% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  17% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  18% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  19% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  20% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  21% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  22% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  23% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  24% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  25% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  26% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  27% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  28% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  29% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  30% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  31% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  32% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  33% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  34% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  35% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  36% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  37% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  38% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  39% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  40% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  41% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  42% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  43% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  44% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  45% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  46% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  47% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  48% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  49% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  50% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  51% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  52% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  53% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  54% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  55% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  56% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  57% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  58% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  59% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  60% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  61% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  62% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  63% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  64% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  65% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  66% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  67% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  68% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  69% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  70% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  71% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  72% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  73% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  74% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  75% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  76% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  77% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  78% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  79% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  80% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  81% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  82% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  83% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  84% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  85% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  86% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  87% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  88% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  89% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  90% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  91% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  92% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  93% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  94% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  95% {
+    border-color: rgb(204, 41, 41);
+  }
+
+  96% {
+    border-color: rgb(41, 106, 204);
+  }
+
+  97% {
+    border-color: rgb(171, 204, 41);
+  }
+
+  98% {
+    border-color: rgb(171, 41, 204);
+  }
+
+  99% {
+    border-color: rgb(41, 204, 106);
+  }
+
+  100% {
+    border-color: rgb(204, 41, 41);
+  }
+}
+
+@keyframes rainbow-color {
+  0% {
+    color: rgb(204, 41, 41);
+  }
+
+  1% {
+    color: rgb(41, 106, 204);
+  }
+
+  2% {
+    color: rgb(171, 204, 41);
+  }
+
+  3% {
+    color: rgb(171, 41, 204);
+  }
+
+  4% {
+    color: rgb(41, 204, 106);
+  }
+
+  5% {
+    color: rgb(204, 41, 41);
+  }
+
+  6% {
+    color: rgb(41, 106, 204);
+  }
+
+  7% {
+    color: rgb(171, 204, 41);
+  }
+
+  8% {
+    color: rgb(171, 41, 204);
+  }
+
+  9% {
+    color: rgb(41, 204, 106);
+  }
+
+  10% {
+    color: rgb(204, 41, 41);
+  }
+
+  11% {
+    color: rgb(41, 106, 204);
+  }
+
+  12% {
+    color: rgb(171, 204, 41);
+  }
+
+  13% {
+    color: rgb(171, 41, 204);
+  }
+
+  14% {
+    color: rgb(41, 204, 106);
+  }
+
+  15% {
+    color: rgb(204, 41, 41);
+  }
+
+  16% {
+    color: rgb(41, 106, 204);
+  }
+
+  17% {
+    color: rgb(171, 204, 41);
+  }
+
+  18% {
+    color: rgb(171, 41, 204);
+  }
+
+  19% {
+    color: rgb(41, 204, 106);
+  }
+
+  20% {
+    color: rgb(204, 41, 41);
+  }
+
+  21% {
+    color: rgb(41, 106, 204);
+  }
+
+  22% {
+    color: rgb(171, 204, 41);
+  }
+
+  23% {
+    color: rgb(171, 41, 204);
+  }
+
+  24% {
+    color: rgb(41, 204, 106);
+  }
+
+  25% {
+    color: rgb(204, 41, 41);
+  }
+
+  26% {
+    color: rgb(41, 106, 204);
+  }
+
+  27% {
+    color: rgb(171, 204, 41);
+  }
+
+  28% {
+    color: rgb(171, 41, 204);
+  }
+
+  29% {
+    color: rgb(41, 204, 106);
+  }
+
+  30% {
+    color: rgb(204, 41, 41);
+  }
+
+  31% {
+    color: rgb(41, 106, 204);
+  }
+
+  32% {
+    color: rgb(171, 204, 41);
+  }
+
+  33% {
+    color: rgb(171, 41, 204);
+  }
+
+  34% {
+    color: rgb(41, 204, 106);
+  }
+
+  35% {
+    color: rgb(204, 41, 41);
+  }
+
+  36% {
+    color: rgb(41, 106, 204);
+  }
+
+  37% {
+    color: rgb(171, 204, 41);
+  }
+
+  38% {
+    color: rgb(171, 41, 204);
+  }
+
+  39% {
+    color: rgb(41, 204, 106);
+  }
+
+  40% {
+    color: rgb(204, 41, 41);
+  }
+
+  41% {
+    color: rgb(41, 106, 204);
+  }
+
+  42% {
+    color: rgb(171, 204, 41);
+  }
+
+  43% {
+    color: rgb(171, 41, 204);
+  }
+
+  44% {
+    color: rgb(41, 204, 106);
+  }
+
+  45% {
+    color: rgb(204, 41, 41);
+  }
+
+  46% {
+    color: rgb(41, 106, 204);
+  }
+
+  47% {
+    color: rgb(171, 204, 41);
+  }
+
+  48% {
+    color: rgb(171, 41, 204);
+  }
+
+  49% {
+    color: rgb(41, 204, 106);
+  }
+
+  50% {
+    color: rgb(204, 41, 41);
+  }
+
+  51% {
+    color: rgb(41, 106, 204);
+  }
+
+  52% {
+    color: rgb(171, 204, 41);
+  }
+
+  53% {
+    color: rgb(171, 41, 204);
+  }
+
+  54% {
+    color: rgb(41, 204, 106);
+  }
+
+  55% {
+    color: rgb(204, 41, 41);
+  }
+
+  56% {
+    color: rgb(41, 106, 204);
+  }
+
+  57% {
+    color: rgb(171, 204, 41);
+  }
+
+  58% {
+    color: rgb(171, 41, 204);
+  }
+
+  59% {
+    color: rgb(41, 204, 106);
+  }
+
+  60% {
+    color: rgb(204, 41, 41);
+  }
+
+  61% {
+    color: rgb(41, 106, 204);
+  }
+
+  62% {
+    color: rgb(171, 204, 41);
+  }
+
+  63% {
+    color: rgb(171, 41, 204);
+  }
+
+  64% {
+    color: rgb(41, 204, 106);
+  }
+
+  65% {
+    color: rgb(204, 41, 41);
+  }
+
+  66% {
+    color: rgb(41, 106, 204);
+  }
+
+  67% {
+    color: rgb(171, 204, 41);
+  }
+
+  68% {
+    color: rgb(171, 41, 204);
+  }
+
+  69% {
+    color: rgb(41, 204, 106);
+  }
+
+  70% {
+    color: rgb(204, 41, 41);
+  }
+
+  71% {
+    color: rgb(41, 106, 204);
+  }
+
+  72% {
+    color: rgb(171, 204, 41);
+  }
+
+  73% {
+    color: rgb(171, 41, 204);
+  }
+
+  74% {
+    color: rgb(41, 204, 106);
+  }
+
+  75% {
+    color: rgb(204, 41, 41);
+  }
+
+  76% {
+    color: rgb(41, 106, 204);
+  }
+
+  77% {
+    color: rgb(171, 204, 41);
+  }
+
+  78% {
+    color: rgb(171, 41, 204);
+  }
+
+  79% {
+    color: rgb(41, 204, 106);
+  }
+
+  80% {
+    color: rgb(204, 41, 41);
+  }
+
+  81% {
+    color: rgb(41, 106, 204);
+  }
+
+  82% {
+    color: rgb(171, 204, 41);
+  }
+
+  83% {
+    color: rgb(171, 41, 204);
+  }
+
+  84% {
+    color: rgb(41, 204, 106);
+  }
+
+  85% {
+    color: rgb(204, 41, 41);
+  }
+
+  86% {
+    color: rgb(41, 106, 204);
+  }
+
+  87% {
+    color: rgb(171, 204, 41);
+  }
+
+  88% {
+    color: rgb(171, 41, 204);
+  }
+
+  89% {
+    color: rgb(41, 204, 106);
+  }
+
+  90% {
+    color: rgb(204, 41, 41);
+  }
+
+  91% {
+    color: rgb(41, 106, 204);
+  }
+
+  92% {
+    color: rgb(171, 204, 41);
+  }
+
+  93% {
+    color: rgb(171, 41, 204);
+  }
+
+  94% {
+    color: rgb(41, 204, 106);
+  }
+
+  95% {
+    color: rgb(204, 41, 41);
+  }
+
+  96% {
+    color: rgb(41, 106, 204);
+  }
+
+  97% {
+    color: rgb(171, 204, 41);
+  }
+
+  98% {
+    color: rgb(171, 41, 204);
+  }
+
+  99% {
+    color: rgb(41, 204, 106);
+  }
+
+  100% {
+    color: rgb(204, 41, 41);
+  }
+}

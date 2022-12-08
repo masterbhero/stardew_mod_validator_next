@@ -1,0 +1,582 @@
+.rainbow {
+  // @apply tw-bg-red-500;
+  // background: radial-gradient(circle, rgba(255,0,0,1) 36%, rgba(255,153,0,1) 100%);
+  animation: radial-rainbow-bg linear 1s infinite;
+}
+
+@keyframes radial-rainbow-bg {
+  0% {
+    background: radial-gradient(circle, #ff0000 36%, #ff9900 100%);
+  }
+
+  10% {
+    background: radial-gradient(circle, #ff9900 36%, #ccff00 100%);
+  }
+
+  20% {
+    background: radial-gradient(circle, #ccff00 36%, #33ff00 100%);
+  }
+
+  30% {
+    background: radial-gradient(circle, #33ff00 36%, #00ff66 100%);
+  }
+
+  40% {
+    background: radial-gradient(circle, #00ff66 36%, #00ffff 100%);
+  }
+
+  50% {
+    background: radial-gradient(circle, #00ffff 36%, #0066ff 100%);
+  }
+
+  60% {
+    background: radial-gradient(circle, #0066ff 36%, #3300ff 100%);
+  }
+
+  70% {
+    background: radial-gradient(circle, #3300ff 36%, #cc00ff 100%);
+  }
+
+  80% {
+    background: radial-gradient(circle, #cc00ff 36%, #ff0099 100%);
+  }
+
+  90% {
+    background: radial-gradient(circle, #ff0099 36%, #ff0000 100%);
+  }
+
+  100% {
+    background: radial-gradient(circle, #ff0000 36%, #ff9900 100%);
+  }
+}
+
+.rainbow-dark-pastel {
+  animation: radial-rainbow-pastel-bg linear 300s infinite;
+  // animation: tasta linear 3s infinite;
+  @apply tw-transition-colors tw-duration-500;
+}
+
+@keyframes tasta {
+  0%{
+    background-color:red;
+  }
+
+  33%{
+    background-color:blue;
+  }
+
+  66%{
+    background-color:yellow;
+  }
+
+  100%{
+    background-color:red;
+  }
+
+}
+
+@keyframes radial-rainbow-pastel-bg {
+  0%{
+    background-color: rgb(153,104,104)
+}
+
+
+1%{
+    background-color: rgb(104,124,153)
+}
+
+
+2%{
+    background-color: rgb(143,153,104)
+}
+
+
+3%{
+    background-color: rgb(143,104,153)
+}
+
+
+4%{
+    background-color: rgb(104,153,124)
+}
+
+
+5%{
+    background-color: rgb(153,104,104)
+}
+
+
+6%{
+    background-color: rgb(104,124,153)
+}
+
+
+7%{
+    background-color: rgb(143,153,104)
+}
+
+
+8%{
+    background-color: rgb(143,104,153)
+}
+
+
+9%{
+    background-color: rgb(104,153,124)
+}
+
+
+10%{
+    background-color: rgb(153,104,104)
+}
+
+
+11%{
+    background-color: rgb(104,124,153)
+}
+
+
+12%{
+    background-color: rgb(143,153,104)
+}
+
+
+13%{
+    background-color: rgb(143,104,153)
+}
+
+
+14%{
+    background-color: rgb(104,153,124)
+}
+
+
+15%{
+    background-color: rgb(153,104,104)
+}
+
+
+16%{
+    background-color: rgb(104,124,153)
+}
+
+
+17%{
+    background-color: rgb(143,153,104)
+}
+
+
+18%{
+    background-color: rgb(143,104,153)
+}
+
+
+19%{
+    background-color: rgb(104,153,124)
+}
+
+
+20%{
+    background-color: rgb(153,104,104)
+}
+
+
+21%{
+    background-color: rgb(104,124,153)
+}
+
+
+22%{
+    background-color: rgb(143,153,104)
+}
+
+
+23%{
+    background-color: rgb(143,104,153)
+}
+
+
+24%{
+    background-color: rgb(104,153,124)
+}
+
+
+25%{
+    background-color: rgb(153,104,104)
+}
+
+
+26%{
+    background-color: rgb(104,124,153)
+}
+
+
+27%{
+    background-color: rgb(143,153,104)
+}
+
+
+28%{
+    background-color: rgb(143,104,153)
+}
+
+
+29%{
+    background-color: rgb(104,153,124)
+}
+
+
+30%{
+    background-color: rgb(153,104,104)
+}
+
+
+31%{
+    background-color: rgb(104,124,153)
+}
+
+
+32%{
+    background-color: rgb(143,153,104)
+}
+
+
+33%{
+    background-color: rgb(143,104,153)
+}
+
+
+34%{
+    background-color: rgb(104,153,124)
+}
+
+
+35%{
+    background-color: rgb(153,104,104)
+}
+
+
+36%{
+    background-color: rgb(104,124,153)
+}
+
+
+37%{
+    background-color: rgb(143,153,104)
+}
+
+
+38%{
+    background-color: rgb(143,104,153)
+}
+
+
+39%{
+    background-color: rgb(104,153,124)
+}
+
+
+40%{
+    background-color: rgb(153,104,104)
+}
+
+
+41%{
+    background-color: rgb(104,124,153)
+}
+
+
+42%{
+    background-color: rgb(143,153,104)
+}
+
+
+43%{
+    background-color: rgb(143,104,153)
+}
+
+
+44%{
+    background-color: rgb(104,153,124)
+}
+
+
+45%{
+    background-color: rgb(153,104,104)
+}
+
+
+46%{
+    background-color: rgb(104,124,153)
+}
+
+
+47%{
+    background-color: rgb(143,153,104)
+}
+
+
+48%{
+    background-color: rgb(143,104,153)
+}
+
+
+49%{
+    background-color: rgb(104,153,124)
+}
+
+
+50%{
+    background-color: rgb(153,104,104)
+}
+
+
+51%{
+    background-color: rgb(104,124,153)
+}
+
+
+52%{
+    background-color: rgb(143,153,104)
+}
+
+
+53%{
+    background-color: rgb(143,104,153)
+}
+
+
+54%{
+    background-color: rgb(104,153,124)
+}
+
+
+55%{
+    background-color: rgb(153,104,104)
+}
+
+
+56%{
+    background-color: rgb(104,124,153)
+}
+
+
+57%{
+    background-color: rgb(143,153,104)
+}
+
+
+58%{
+    background-color: rgb(143,104,153)
+}
+
+
+59%{
+    background-color: rgb(104,153,124)
+}
+
+
+60%{
+    background-color: rgb(153,104,104)
+}
+
+
+61%{
+    background-color: rgb(104,124,153)
+}
+
+
+62%{
+    background-color: rgb(143,153,104)
+}
+
+
+63%{
+    background-color: rgb(143,104,153)
+}
+
+
+64%{
+    background-color: rgb(104,153,124)
+}
+
+
+65%{
+    background-color: rgb(153,104,104)
+}
+
+
+66%{
+    background-color: rgb(104,124,153)
+}
+
+
+67%{
+    background-color: rgb(143,153,104)
+}
+
+
+68%{
+    background-color: rgb(143,104,153)
+}
+
+
+69%{
+    background-color: rgb(104,153,124)
+}
+
+
+70%{
+    background-color: rgb(153,104,104)
+}
+
+
+71%{
+    background-color: rgb(104,124,153)
+}
+
+
+72%{
+    background-color: rgb(143,153,104)
+}
+
+
+73%{
+    background-color: rgb(143,104,153)
+}
+
+
+74%{
+    background-color: rgb(104,153,124)
+}
+
+
+75%{
+    background-color: rgb(153,104,104)
+}
+
+
+76%{
+    background-color: rgb(104,124,153)
+}
+
+
+77%{
+    background-color: rgb(143,153,104)
+}
+
+
+78%{
+    background-color: rgb(143,104,153)
+}
+
+
+79%{
+    background-color: rgb(104,153,124)
+}
+
+
+80%{
+    background-color: rgb(153,104,104)
+}
+
+
+81%{
+    background-color: rgb(104,124,153)
+}
+
+
+82%{
+    background-color: rgb(143,153,104)
+}
+
+
+83%{
+    background-color: rgb(143,104,153)
+}
+
+
+84%{
+    background-color: rgb(104,153,124)
+}
+
+
+85%{
+    background-color: rgb(153,104,104)
+}
+
+
+86%{
+    background-color: rgb(104,124,153)
+}
+
+
+87%{
+    background-color: rgb(143,153,104)
+}
+
+
+88%{
+    background-color: rgb(143,104,153)
+}
+
+
+89%{
+    background-color: rgb(104,153,124)
+}
+
+
+90%{
+    background-color: rgb(153,104,104)
+}
+
+
+91%{
+    background-color: rgb(104,124,153)
+}
+
+
+92%{
+    background-color: rgb(143,153,104)
+}
+
+
+93%{
+    background-color: rgb(143,104,153)
+}
+
+
+94%{
+    background-color: rgb(104,153,124)
+}
+
+
+95%{
+    background-color: rgb(153,104,104)
+}
+
+
+96%{
+    background-color: rgb(104,124,153)
+}
+
+
+97%{
+    background-color: rgb(143,153,104)
+}
+
+
+98%{
+    background-color: rgb(143,104,153)
+}
+
+
+99%{
+    background-color: rgb(104,153,124)
+}
+
+
+100%{
+    background-color: rgb(153,104,104)
+}
+}

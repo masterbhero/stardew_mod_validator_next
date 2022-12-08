@@ -1,0 +1,57 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+  font-family: 'StardewValleyFont';
+  src: url('../assets/fonts/Stardew_Valley.ttf');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  // font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  //   Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: StardewValleyFont;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+.next-image-fit-div{
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.color{
+  &.success{
+    @apply tw-border-[#005700] tw-bg-[#008a00];  
+  }
+
+  &.warning{
+    @apply tw-border-[#B09500] tw-bg-[#e3c800];
+  }
+
+  &.danger{
+  @apply tw-border-[#B20000] tw-bg-[#e51400];    
+  }
+}

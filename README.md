@@ -1,2 +1,3 @@
-# stardew_mod_validator_next
-validate stardew valley installed mod by checking for mod and it's dependency installation 
+stardew mod view/validator
+
+    - validate mod that has been install to see if all of it's dependency is installed
