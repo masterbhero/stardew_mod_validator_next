@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+#setting
+# /setting
+/setting/modlist.json
+/setting/setting.json
 
 # testing
 /coverage
