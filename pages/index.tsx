@@ -133,7 +133,7 @@ interface propsTypeIndexPage{
     set_lookup_result(props.file_result)
 
     //* set modlistmenu for
-    set_modListJSX(getModListJSXFileResult(props.file_result,ReloadMod))
+    set_modListJSX(getModListJSXFileResult(props.file_result,set_modListJSX,ReloadMod))
 
     //* init menuNameState
     set_menuNameState(menu_list[0].name)
@@ -194,7 +194,7 @@ interface propsTypeIndexPage{
     const getModListResult = await getRequest(`./api/get-setting`,search_params)
 
     if(getModListResult.status){
-      set_modListJSX(getModListJSXModList(getModListResult.data.modlist,ReloadMod))
+      set_modListJSX(getModListJSXModList(getModListResult.data.modlist,set_modListJSX,ReloadMod))
     }
     else{
       alert('reload fail')
@@ -219,13 +219,15 @@ interface propsTypeIndexPage{
           }
         </div>
         {/*//* displaymenu  */ }
-        <div className='tw-flex tw-flex-col tw-border-2 tw-h-screen tw-border-blue-500 tw-w-[70vw]'>
+        {/* <div className='tw-flex tw-flex-col tw-border-2 tw-h-screen tw-border-blue-500 tw-w-[70vw]'> */}
+        <div className='tw-flex tw-flex-col tw-border-2 tw-h-screen tw-border-blue-500 tw-w-[70vw] tw-overflow-scroll'>
           <div>
             {
               MenuSelectButtonList(menu_list,menuNameState,set_menuNameState)
             }
           </div>
-          <div className='tw-overflow-auto'>
+          {/* <div className='tw-overflow-auto'> */}
+          <div className='tw-w-screen'>
             {
               DisplayActivatedMenu(
                 menuNameState,

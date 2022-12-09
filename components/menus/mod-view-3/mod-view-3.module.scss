@@ -3,6 +3,10 @@
     // @apply tw-px-4 tw-py-1 tw-border-2  tw-rounded-lg tw-text-white ;
     @apply tw-px-4 tw-py-1 tw-border-2 tw-text-white ;
 
+    &.save{
+        @apply tw-border-[#005700] tw-text-[#008a00];  
+    }
+
     &.edit{
         // @apply tw-border-[#B09500] tw-bg-[#e3c800];
         @apply tw-border-[#B09500] tw-text-[#B09500];

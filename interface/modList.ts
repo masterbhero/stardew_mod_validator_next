@@ -78,6 +78,7 @@ export interface modListDisplay {
     refFolder?:string,  //in case this is a ref to the mod folder
     tag?:string[],
     status?:number, //1 = done , 2 = mod installeed but not dependency 3 = mod not installed
+    editMode?:boolean,
 }
 
 export interface dependencyDisplay {

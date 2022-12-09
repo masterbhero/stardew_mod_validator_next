@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import modList , { modListDisplay, mod_detail, mod_detail_optional } from '../../../interface/modList'
 import TriangleIcon from "../../../assets/triangle-white.png"
 import VersionIcon from "../../../assets/version-white.png"
@@ -63,9 +63,9 @@ export function makeDisplayList(mod_list:modList[]) {
     return newDisplay
 }
 
-export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,ReloadMod:() => Promise<void>,modview?:boolean):JSX.Element
-export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,ReloadMod:() => Promise<void>,modview?:boolean):JSX.Element[] 
-export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,ReloadMod:() => Promise<void>,modview?:boolean):any {
+export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,ReloadMod:() => Promise<void>,modview?:boolean):JSX.Element
+export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,ReloadMod:() => Promise<void>,modview?:boolean):JSX.Element[] 
+export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,ReloadMod:() => Promise<void>,modview?:boolean):any {
   if(mod_list && mod_list.length > 0){
     const display_array:JSX.Element[] = []
     mod_list.map((value,key) => {
@@ -98,7 +98,8 @@ export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,R
           } 
           id='main'
           >
-              <div className='tw-flex tw-items-center tw-justify-between tw-min-w-[200px]'>
+              {/* <div className='tw-flex tw-items-center tw-justify-between tw-min-w-[200px]'> */}
+              <div className='tw-flex tw-items-center tw-justify-between '>
                 <div className={`tw-w-10 tw-h-10`}>
                   <Image src={modview ? FolderIcon : DependencyIcon} alt="" priority className="tw-w-full tw-h-auto"/>
                   {/* <Image src={modview ? FolderIcon : DependencyIcon} alt="" width={150} height={150}/> */}
@@ -113,13 +114,21 @@ export function loopAndDisplayDependency(mod_list:modListDisplay[] | undefined,R
                 modData: value
               }} />
               <div className='tw-flex tw-justify-between tw-mt-2'>
-                <div><button className={`${Styles.button} ${Styles.edit}`}>edit</button></div>
+                <div>
+                  <button className={`${Styles.button} ${(value.editMode ? Styles.save : Styles.edit)}`} onClick={() => {toggleEditMode(value,mod_list,set_modListJSX,ReloadMod)}}>
+                    {
+                      value.editMode 
+                      ? <div>save</div>
+                      : <div>edit</div>
+                    }
+                  </button>
+                </div>
                 <div><button className={`${Styles.button} ${Styles.remove}`} onClick={async () => {await removeIndexIdFromArray(value,mod_list,ReloadMod)}}>remove</button></div>
               </div>
           </div>
           <div className={`tw-mt-24` }> 
             {
-              loopAndDisplayDependency(value.dependency,ReloadMod)
+              loopAndDisplayDependency(value.dependency,set_modListJSX,ReloadMod)
             }
           </div>
         </div>
@@ -164,16 +173,31 @@ export function getModListJSXFileResult(file_result: {
   data: any;
   message: string;
   name: string;
-}[],ReloadMod:() => Promise<void>) {
+}[],
+set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,
+ReloadMod:() => Promise<void>,
+sorting:{
+  alphabet:boolean
+} = {
+  alphabet:true
+}
+){
   const mod_list_local = getModListResult(file_result)
   const modDisplayList = makeDisplayList(mod_list_local);
-  const displayModJSX = loopAndDisplayDependency(modDisplayList,ReloadMod, true);
+  sorting.alphabet ? modDisplayList.sort((a, b) => a.name.localeCompare(b.name)) : ""
+  const displayModJSX = loopAndDisplayDependency(modDisplayList,set_modListJSX,ReloadMod, true);
   return displayModJSX
 }
 
-export function getModListJSXModList(modlist: modList[],ReloadMod:() => Promise<void>) {
+export function getModListJSXModList(modlist: modList[],set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,ReloadMod:() => Promise<void>,sorting:{
+  alphabet:boolean
+} = {
+  alphabet:true
+}
+) {
   const modDisplayList = makeDisplayList(modlist);
-  const displayModJSX = loopAndDisplayDependency(modDisplayList,ReloadMod, true);
+  sorting.alphabet ? modDisplayList.sort((a, b) => a.name.localeCompare(b.name)) : ""
+  const displayModJSX = loopAndDisplayDependency(modDisplayList,set_modListJSX,ReloadMod, true);
   return displayModJSX
 }
 
@@ -185,6 +209,55 @@ export function getModListJSXModList(modlist: modList[],ReloadMod:() => Promise<
 // }
 
 // export getModListJSX
+
+function EditModDetail({props}:{props:{modData:modListDisplay}}){
+  return (
+    <div className={`tw-flex tw-flex-col`} >
+      <div className={` tw-h-40 tw-flex tw-flex-col tw-transition-height tw-duration-500`} id="detail-div">
+        <div className='tw-flex tw-items-center tw-mt-2' id='version'>
+          <div className={`tw-w-4 tw-h-4`}>
+            <Image src={VersionIcon} alt="version" className={` tw-w-full tw-h-auto`} title="version"/>
+          </div>
+          <div className='tw-ml-2 tw-w-full'>
+            <input value={props.modData.version ? props.modData.version : "no data"} className="tw-pl-1 tw-w-full"/>
+          </div>
+        </div>
+        <div className='tw-flex tw-items-center tw-mt-2' id='description'>
+          <div className={`tw-w-4 tw-h-4`}>
+            <Image src={DescriptionIcon} alt="" className={` tw-w-full tw-h-auto`} title="description"/>
+          </div>
+          <div className='tw-ml-2 tw-w-full'>
+            <input value={props.modData.description ? props.modData.description : "no data"} className="tw-pl-1 tw-w-full"/>
+          </div>
+        </div>
+        <div className='tw-flex tw-items-center tw-mt-2' id='tag'>
+          <div className={`tw-w-4 tw-h-4`}>
+            <Image src={TagIcon} alt="" className={` tw-w-full tw-h-auto`} title="tag"/>
+          </div>
+          <div className='tw-ml-2 tw-w-full'>
+            <input value={props.modData.tag ? props.modData.tag : "no data"} className="tw-pl-1 tw-w-full"/>
+          </div>
+        </div>
+        <div className='tw-flex tw-items-center tw-mt-2' id='refFolder'>
+          <div className={`tw-w-4 tw-h-4`}>
+            <Image src={FolderIcon} alt="" className={` tw-w-full tw-h-auto`} title="refFolder"/>
+          </div>
+          <div className='tw-ml-2 tw-w-full'>
+            <input value={props.modData.refFolder ? props.modData.refFolder : "no data"} className="tw-pl-1 tw-w-full"/>
+          </div>
+        </div>
+        <div className='tw-flex tw-items-center tw-mt-2' id='url'>
+          <div className={`tw-w-4 tw-h-4`}>
+            <Image src={UrlIcon} alt="" className={` tw-w-full tw-h-auto`} title="url"/>
+          </div>
+          <div className='tw-ml-2 tw-w-full'>
+            <input value={props.modData.url ? props.modData.url : "no data"} className="tw-pl-1 tw-w-full"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function DisplayModDetail({props}:{props:{modData:modListDisplay}}){
 
@@ -224,40 +297,40 @@ function DisplayModDetail({props}:{props:{modData:modListDisplay}}){
           <div className={`tw-w-4 tw-h-4`}>
             <Image src={VersionIcon} alt="version" className={` tw-w-full tw-h-auto`} title="version"/>
           </div>
-          <div className='tw-ml-2'>
-            <input value={props.modData.version ? props.modData.version : "no data"} readOnly={true} className="tw-pl-1"/>
+          <div className='tw-ml-2 tw-w-full'>
+            <input defaultValue={props.modData.version ? props.modData.version : "no data"} readOnly={(props.modData.editMode ? false : true)} className={(props.modData.editMode ? `tw-bg-green-800` : ``) + ` tw-pl-1 tw-w-full`}/>
           </div>
         </div>
         <div className='tw-flex tw-items-center tw-mt-2' id='description'>
           <div className={`tw-w-4 tw-h-4`}>
             <Image src={DescriptionIcon} alt="" className={` tw-w-full tw-h-auto`} title="description"/>
           </div>
-          <div className='tw-ml-2'>
-            <input value={props.modData.description ? props.modData.description : "no data"} readOnly={true} className="tw-pl-1"/>
+          <div className='tw-ml-2 tw-w-full'>
+            <input defaultValue={props.modData.description ? props.modData.description : "no data"} readOnly={(props.modData.editMode ? false : true)} className={(props.modData.editMode ? `tw-bg-green-800` : ``) + ` tw-pl-1 tw-w-full`}/>
           </div>
         </div>
         <div className='tw-flex tw-items-center tw-mt-2' id='tag'>
           <div className={`tw-w-4 tw-h-4`}>
             <Image src={TagIcon} alt="" className={` tw-w-full tw-h-auto`} title="tag"/>
           </div>
-          <div className='tw-ml-2'>
-            <input value={props.modData.tag ? props.modData.tag : "no data"} readOnly={true} className="tw-pl-1"/>
+          <div className='tw-ml-2 tw-w-full'>
+            <input defaultValue={props.modData.tag ? props.modData.tag : "no data"} readOnly={(props.modData.editMode ? false : true)} className={(props.modData.editMode ? `tw-bg-green-800` : ``) + ` tw-pl-1 tw-w-full`}/>
           </div>
         </div>
         <div className='tw-flex tw-items-center tw-mt-2' id='refFolder'>
           <div className={`tw-w-4 tw-h-4`}>
             <Image src={FolderIcon} alt="" className={` tw-w-full tw-h-auto`} title="refFolder"/>
           </div>
-          <div className='tw-ml-2'>
-            <input value={props.modData.refFolder ? props.modData.refFolder : "no data"} readOnly={true} className="tw-pl-1"/>
+          <div className='tw-ml-2 tw-w-full'>
+            <input defaultValue={props.modData.refFolder ? props.modData.refFolder : "no data"} readOnly={(props.modData.editMode ? false : true)} className={(props.modData.editMode ? `tw-bg-green-800` : ``) + ` tw-pl-1 tw-w-full`}/>
           </div>
         </div>
         <div className='tw-flex tw-items-center tw-mt-2' id='url'>
           <div className={`tw-w-4 tw-h-4`}>
             <Image src={UrlIcon} alt="" className={` tw-w-full tw-h-auto`} title="url"/>
           </div>
-          <div className='tw-ml-2'>
-            <input value={props.modData.url ? props.modData.url : "no data"} readOnly={true} className="tw-pl-1"/>
+          <div className='tw-ml-2 tw-w-full'>
+            <input defaultValue={props.modData.url ? props.modData.url : "no data"} readOnly={(props.modData.editMode ? false : true)} className={(props.modData.editMode ? `tw-bg-green-800` : ``) + ` tw-pl-1 tw-w-full`}/>
           </div>
         </div>
       </div>
@@ -307,6 +380,32 @@ function findIndexIdFromArray(mod_index:modListDisplay,mod_list:modListDisplay[]
     return loop_modlist
   })
   loopArr(new_mod_list)
+}
+
+async function toggleEditMode(mod_index:modListDisplay,mod_list:modListDisplay[],set_modListJSX: Dispatch<SetStateAction<JSX.Element>>,ReloadMod:() => Promise<void>){
+  let new_mod_list = [...mod_list]
+  let update = false;
+  const loopArr = ((loop_modlist:modListDisplay[]) => {
+    for(let mod of loop_modlist){
+      if(_.isEqual(mod_index,mod)){
+        const index = loop_modlist.indexOf(mod)
+        if (index !== -1) {
+          // console.log("found index",index)
+          update = loop_modlist[index].editMode ? true : false
+          loop_modlist[index].editMode = !loop_modlist[index].editMode
+        }
+      }
+      if(mod.dependency && mod.dependency.length > 0){
+        loopArr(mod.dependency)
+      }
+    }
+    return loop_modlist
+  })
+  loopArr(new_mod_list)
+  console.log(new_mod_list)
+  console.log(update)
+  const mod_list_update: modList[] = [...new_mod_list]  
+  set_modListJSX(getModListJSXModList(mod_list_update,set_modListJSX,ReloadMod))
 }
 
 async function updateModListJson(new_mod_list:modListDisplay[]){
