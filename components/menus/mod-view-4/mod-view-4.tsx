@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { createRef, RefObject, useEffect, useState } from "react";
+import { ChangeEvent, createRef, RefObject, useEffect, useState } from "react";
 import useModList from "../../../hooks/useModlist";
 import { useModListDisplay } from "../../../hooks/useModlistDisplay";
 import useSetting from "../../../hooks/useSetting";
@@ -47,29 +47,93 @@ function ModList() {
     return modList.map((mod) => {
       return (
         <div key={mod.id} className={`tw-mb-4`}>
-          <div id="main" className="tw-inline-flex tw-flex-col tw-border-2 tw-border-white tw-mb-4 tw-p-4">
-            <div id="mod_name" className={`tw-mb-4`}>
-              <div className={`tw-flex tw-justify-center ${mod.status === 1 ? "tw-text-success" : mod.status === 2 ? "tw-text-warning" : "tw-text-danger"}`}>{mod.name}</div>
-              <div>Add {formatDate(mod.create_date)}</div>
+          <div className="tw-flex">
+            <div id="main-box">
+              <div id="main" className="tw-inline-flex tw-flex-col tw-border-2 tw-border-white tw-mb-4 tw-p-4">
+                <div id="mod_name" className={`tw-mb-4`}>
+                  <div className={`tw-flex tw-justify-center ${mod.status === 1 ? "tw-text-success" : mod.status === 2 ? "tw-text-warning" : "tw-text-danger"}`}>{mod.name}</div>
+                  <div>Add {formatDate(mod.create_date)}</div>
+                </div>
+                <div className="tw-flex tw-justify-between tw-mb-4">
+                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {
+                    await loopArray(mod,'toggle',{field:"editMode"});
+                    !mod.displayModDetail && await loopArray(mod,'toggle',{field:"displayModDetail"});
+                  }}>Edit</button>
+                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'toggle')}}>Remove</button>
+                </div>
+                <div className={``}>
+                  {
+                    mod.displayModDetail
+                    ? (
+                      <div>
+                        <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
+                          await loopArray(mod,'toggle',{field:"displayModDetail"})}
+                        }>
+                            <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayModDetail ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
+                            <div>
+                              hide detail
+                            </div>
+                        </button>
+                      </div>
+                    )
+                    : (
+                      <div>
+                        <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
+                          await loopArray(mod,'toggle',{field:"displayModDetail"})}
+                        }>
+                            <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayModDetail ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
+                            <div>
+                              show detail
+                            </div>
+                        </button>
+                      </div>
+                    )
+                  }
+                </div>
+                <div>
+                  {
+                    mod.displayModDetail && DisplayModDetail(mod)
+                  }
+                </div>
+              </div>
             </div>
-            <div className="tw-flex tw-justify-between tw-mb-4">
-              <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {
-                await loopArray(mod,'toggle',{field:"editMode"});
-                !mod.displayModDetail && await loopArray(mod,'toggle',{field:"displayModDetail"});
-              }}>Edit</button>
-              <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'toggle')}}>Remove</button>
-            </div>
-            <div className={``}>
+            <div id="add-box" className="tw-ml-4">           
+              <div id="display_add_dependency" className={`tw-flex tw-mb-4`}>
+                {mod.displayAddDependency && AddNewMod("Dependency",mod)}
+              </div>
+              <div id="add_new_dependency" className={`tw-ml-4 tw-mb-4`}>
+                {
+                  !mod.displayAddDependency && (
+                    <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
+                      await loopArray(mod,'set',{field:"displayAddDependency",set_value:{set_boolean:true}})}
+                    }>
+                        <Image src={AddIcon} alt="add-icon" className={`tw-w-6 tw-mr-2`}/>
+                        <div>
+                          Add New Dependency
+                        </div>
+                    </button>
+                  )
+                }
+              </div>
+              <div id="show_or_hide_dependency" className={`tw-ml-4 tw-mb-4`}>
               {
-                mod.displayModDetail
+                mod.displayDependency
                 ? (
                   <div>
                     <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                      await loopArray(mod,'toggle',{field:"displayModDetail"})}
+                      mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
                     }>
-                        <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayModDetail ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
+                        <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
                         <div>
-                          hide detail
+                          {
+                            mod.dependency && mod.dependency.length > 0
+                            ? (
+                              <div>hide dependency</div>
+                            )
+                            : (
+                              <div>no dependency</div>
+                            )
+                          }
                         </div>
                     </button>
                   </div>
@@ -77,84 +141,26 @@ function ModList() {
                 : (
                   <div>
                     <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                      await loopArray(mod,'toggle',{field:"displayModDetail"})}
+                      mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
                     }>
-                        <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayModDetail ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
+                        <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
                         <div>
-                          show detail
+                          {
+                            mod.dependency && mod.dependency.length > 0
+                            ? (
+                              <div>show dependency</div>
+                            )
+                            : (
+                              <div>no dependency</div>
+                            )
+                          }
                         </div>
                     </button>
                   </div>
                 )
               }
-            </div>
-            <div>
-              {
-                mod.displayModDetail && DisplayModDetail(mod)
-              }
-            </div>
-          </div>
-          <div id="display_add_dependency" className={`tw-flex tw-mb-4`}>
-            {mod.displayAddDependency && AddNewMod("Dependency",mod)}
-          </div>
-          <div id="add_new_dependency" className={`tw-ml-4 tw-mb-4`}>
-            {
-              !mod.displayAddDependency && (
-                <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                  await loopArray(mod,'set',{field:"displayAddDependency",set_value:{set_boolean:true}})}
-                }>
-                    <Image src={AddIcon} alt="add-icon" className={`tw-w-6 tw-mr-2`}/>
-                    <div>
-                      Add New Dependency
-                    </div>
-                </button>
-              )
-            }
-          </div>
-          <div id="show_or_hide_dependency" className={`tw-ml-4 tw-mb-4`}>
-          {
-            mod.displayDependency
-            ? (
-              <div>
-                <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                  mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
-                }>
-                    <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
-                    <div>
-                      {
-                        mod.dependency && mod.dependency.length > 0 
-                        ? (
-                          <div>hide dependency</div>
-                        )
-                        : (
-                          <div>no dependency</div>
-                        )
-                      }
-                    </div>
-                </button>
               </div>
-            )
-            : (
-              <div>
-                <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                  mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
-                }>
-                    <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
-                    <div>
-                      {
-                        mod.dependency && mod.dependency.length > 0 
-                        ? (
-                          <div>show dependency</div>
-                        )
-                        : (
-                          <div>no dependency</div>
-                        )
-                      }
-                    </div>
-                </button>
-              </div>
-            )
-          }
+            </div>
           </div>
           <div id="renderModList">
           {mod.dependency && mod.dependency.length > 0 && mod.displayDependency && (
@@ -592,6 +598,11 @@ function ModList() {
   function getTotalNotInstalled(modList: modListDisplay[]): number {
     return modList.filter((mod) => mod.status === 3).length;
   }
+
+  // function filterModListByName(searchTerm: string): modListDisplay[] {
+  //   return modListDisplayState.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  // }
+  
   
   return <div className="tw-flex tw-flex-col">
     <div className="tw-mt-4 tw-flex tw-flex-col">
@@ -615,7 +626,15 @@ function ModList() {
       </div>
       <div className="tw-inline-flex tw-mb-10">{displayAddNewModState && AddNewMod("Mod")}</div>
     </div>
-    <div id="display_mod" className="tw-ml-10">{renderModList(modListDisplayState)}</div>
+    <div id="display_mod" className="tw-ml-10">
+      <div className={`tw-flex tw-mb-4`}>
+        <div className="tw-mr-4">Search Mod</div>
+        {/* <input type="text" className={`tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-pl-2`} 
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {setModListDisplayState(filterModListByName(event.target.value))}}
+        /> */}
+      </div>
+      <div>{renderModList(modListDisplayState)}</div>
+    </div>
   </div>;
 }
 
