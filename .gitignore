@@ -10,6 +10,9 @@
 /setting/modlist.json
 /setting/setting.json
 
+#logs
+/logs/modlist*
+
 # testing
 /coverage
 

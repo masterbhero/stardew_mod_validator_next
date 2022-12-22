@@ -4,7 +4,8 @@ import fs, { writeFileSync } from "fs";
 import { readdir } from "fs/promises";
 import _ from "lodash";
 import { lookupSetting } from '../../functions/lookup/setting-lookup';
-import { setting_location_config } from '../../config/config';
+import { logs_location_config, setting_location_config } from '../../config/config';
+import { formatDate, formatDateUnderscore } from '../../functions/format/format-iso-to-date';
 
 const apiRoute = nextConnect<NextApiRequest, NextApiResponse>({
     //error
@@ -35,6 +36,7 @@ apiRoute.put(async (req,res) => {
         ...json_data,
       }
       new_data[req.body.field] = req.body.data
+      fs.writeFileSync(`${logs_location_config().modlist}/modlist-log-${formatDateUnderscore(new Date().toISOString())}.json`,JSON.stringify(json_data))
       fs.writeFileSync(`${setting_location_config()}/${req.body.name}`,JSON.stringify(new_data))
       return res.status(200).json({
         status:true,
@@ -47,12 +49,14 @@ apiRoute.put(async (req,res) => {
       })
     }
     catch(err:any){
+      console.log(err)
       return res.status(500).json({
         status:false,
         data:null,
         message:err.message,
         debug:{
-          body:req.body
+          body:req.body,
+          err:err.message
         }
       })
     }

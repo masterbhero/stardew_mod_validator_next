@@ -19,6 +19,13 @@ export function setting_location_config(){
     return `./setting`
 }
 
+export function logs_location_config(){
+    return {
+        main:`./logs`,
+        modlist:`./logs/modlist`
+    }
+}
+
 export function mode_menu_menulist(){
     return [
         'create',

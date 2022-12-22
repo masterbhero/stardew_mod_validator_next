@@ -21,11 +21,13 @@ import { useDispatch } from "react-redux";
 import { set_useSettingState } from "../../../store/useSettingSlice";
 import { genRandomId } from "../../../functions/others/gen-random-id";
 import { formatDate } from "../../../functions/format/format-iso-to-date";
+import { useModListUnEdit } from "../../../hooks/useModListUnEdit";
 
 function ModList() {
   const modList: modList[] = useModList().data;
   // const modListDisplayState: modListDisplay[] = useModListDisplay(modList);
   // const [modListDisplayState, setModListDisplayState] = useState<modListDisplay[]>(useModListDisplay(modList));
+  const [modListUnEdit,set_modListUnEdit] = useModListUnEdit(modList);
   const [modListDisplayState, setModListDisplayState] = useModListDisplay(modList);
   const dispatch = useDispatch();
 
@@ -463,12 +465,22 @@ function ModList() {
     option?.update_mod_list && (await updateModListJson(new_mod_list))
   }
 
+  function replaceElements(original: modList[], newArray: modList[]) {
+    return original.map(item => {
+      // Find the element in the new array with the same id
+      const newItem = newArray.find(newItem => newItem.id === item.id);
+      // If a matching element is found, return it, otherwise return the original element
+      return newItem ? newItem : item;
+    });
+  }
+
   async function updateModListJson(new_mod_list:modListDisplay[]){
   const search_params = new URLSearchParams( { "path":"modlist.json" } )
   const getModListResult = await getRequest(`./api/get-setting`,search_params)
+  const new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
   if(getModListResult.status){
     const url = `./api/edit-setting`
-    let new_modelist:modList[] = convertModListDisplayArrayToModListArray(new_mod_list)
+    let new_modelist:modList[] = convertModListDisplayArrayToModListArray(new_updated_with_unedit_modlist)
 
     const postbody = {
       name:'modlist.json',
@@ -599,9 +611,9 @@ function ModList() {
     return modList.filter((mod) => mod.status === 3).length;
   }
 
-  // function filterModListByName(searchTerm: string): modListDisplay[] {
-  //   return modListDisplayState.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  // }
+  function filterModListByName(searchTerm: string): modListDisplay[] {
+    return modListUnEdit.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  }
   
   
   return <div className="tw-flex tw-flex-col">
@@ -629,9 +641,9 @@ function ModList() {
     <div id="display_mod" className="tw-ml-10">
       <div className={`tw-flex tw-mb-4`}>
         <div className="tw-mr-4">Search Mod</div>
-        {/* <input type="text" className={`tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-pl-2`} 
+        <input type="text" className={`tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-pl-2`} 
           onChange={(event: ChangeEvent<HTMLInputElement>) => {setModListDisplayState(filterModListByName(event.target.value))}}
-        /> */}
+        />
       </div>
       <div>{renderModList(modListDisplayState)}</div>
     </div>
