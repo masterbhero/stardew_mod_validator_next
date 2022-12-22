@@ -34,7 +34,8 @@ export default function ModMenuCreate2(props: {
   let main_mod_data:modListCreateDisplay = {
     id: '',
     name: '',
-    displayModDetail: false
+    displayModDetail: false,
+    create_date:new Date().toISOString()
   }
 
   async function addMod(){
@@ -102,7 +103,7 @@ export default function ModMenuCreate2(props: {
   function addNewDependency(){
     if(dep_input_mod_ref.current){
         let new_dependencyState = [...props.dependencyState]
-        new_dependencyState.push({displayModDetail:false,id:genRandomId(),name:dep_input_mod_ref.current?.value ? dep_input_mod_ref.current?.value : (() => { alert("enter something first dep"); return ""})() })
+        new_dependencyState.push({displayModDetail:false,id:genRandomId(),create_date:new Date().toISOString(),name:dep_input_mod_ref.current?.value ? dep_input_mod_ref.current?.value : (() => { alert("enter something first dep"); return ""})() })
         props.set_dependencyState(new_dependencyState)
     }
     else{
@@ -277,16 +278,18 @@ function DetailComponent({props}:{props:{ref:RefObject<HTMLDivElement>,modIndex:
 
 function extractDetailDiv(detail_div_ref: RefObject<HTMLDivElement>):mod_detail{
   let mod_detail_data:mod_detail = {
-    description:"",
-    refFolder:"",
-    tag:[],
-    url:"",
-    version:"",
+    description: "",
+    refFolder: "",
+    tag: [],
+    url: "",
+    version: "",
+    name: ''
   }
   const detail_div = detail_div_ref.current?.querySelectorAll('#detail-div')[0]
   if(!(detail_div?.children)) {
     alert("empty detail_div type")
     return {
+      name:"",
       description:"",
       refFolder:"",
       tag:[],
@@ -385,7 +388,8 @@ function add_dependency(modIndex:modList,dependencyState:modListCreateDisplay[],
               id:genRandomId(),
               // name:genRandomId(),
               name:input_ref.current?.value,
-              dependency:[]
+              dependency:[],
+              create_date:new Date().toISOString()
             })
           }
           else{
@@ -394,7 +398,8 @@ function add_dependency(modIndex:modList,dependencyState:modListCreateDisplay[],
               id:genRandomId(),
               // name:genRandomId(),
               name:input_ref.current?.value,
-              dependency:[]
+              dependency:[],
+              create_date:new Date().toISOString()
             }]
           }
         }

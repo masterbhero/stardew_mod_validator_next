@@ -5,6 +5,7 @@ interface modList
 {
     id:string,
     name:string,
+    create_date:string,
     dependency?:modList[],
     description?:string,
     version?:string,
@@ -14,6 +15,7 @@ interface modList
 }
 
 export interface mod_detail{
+    name:string,
     description:string,
     version:string,
     url:string,
@@ -56,6 +58,7 @@ export default modList
 export interface modListCreateDisplay {
     id:string,
     name:string,
+    create_date:string,
     dependency?:modListCreateDisplay[],
     description?:string,
     version?:string,
@@ -68,6 +71,8 @@ export interface modListCreateDisplay {
 export interface modListDisplay {
     id:string,
     name:string,
+    create_date:string,
+    displayAddDependency?:boolean, //for display add dependency / mod element
     displayDependency?:boolean,
     displayMod?:boolean,
     dependency?:modListDisplay[],
@@ -78,15 +83,15 @@ export interface modListDisplay {
     refFolder?:string,  //in case this is a ref to the mod folder
     tag?:string[],
     status?:number, //1 = done , 2 = mod installeed but not dependency 3 = mod not installed
-    editMode?:boolean,
+    editMode?:boolean, //enter edit mod
 }
 
-export interface dependencyDisplay {
-    name:string,
-    displayDependency?:boolean,
-    dependency?:dependencyDisplay[],
-    description?:string,
-    version?:string,
-    url?:string,
-    refFolder?:string[],  //in case this is a ref to the mod folder
-}
+// export interface dependencyDisplay {
+//     name:string,
+//     displayDependency?:boolean,
+//     dependency?:dependencyDisplay[],
+//     description?:string,
+//     version?:string,
+//     url?:string,
+//     refFolder?:string[],  //in case this is a ref to the mod folder
+// }
