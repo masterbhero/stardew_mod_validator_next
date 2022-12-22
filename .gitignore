@@ -11,7 +11,7 @@
 /setting/setting.json
 
 #logs
-/logs/modlist*
+# /logs/modlist*
 
 # testing
 /coverage
