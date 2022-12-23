@@ -61,7 +61,7 @@ function ModList() {
                     await loopArray(mod,'toggle',{field:"editMode"});
                     !mod.displayModDetail && await loopArray(mod,'toggle',{field:"displayModDetail"});
                   }}>Edit</button>
-                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'toggle')}}>Remove</button>
+                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'remove_mod')}}>Remove</button>
                 </div>
                 <div className={``}>
                   {
@@ -475,32 +475,32 @@ function ModList() {
   }
 
   async function updateModListJson(new_mod_list:modListDisplay[]){
-  const search_params = new URLSearchParams( { "path":"modlist.json" } )
-  const getModListResult = await getRequest(`./api/get-setting`,search_params)
-  const new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
-  if(getModListResult.status){
-    const url = `./api/edit-setting`
-    let new_modelist:modList[] = convertModListDisplayArrayToModListArray(new_updated_with_unedit_modlist)
+    const search_params = new URLSearchParams( { "path":"modlist.json" } )
+    const getModListResult = await getRequest(`./api/get-setting`,search_params)
+    const new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
+    if(getModListResult.status){
+      const url = `./api/edit-setting`
+      let new_modelist:modList[] = convertModListDisplayArrayToModListArray(new_updated_with_unedit_modlist)
 
-    const postbody = {
-      name:'modlist.json',
-      field:'modlist',
-      data:new_modelist,
-    }
-    console.log("postbody",postbody)
-    const saveResult = await putRequest(url,postbody)
-    if(saveResult.status){
-        alert('save successfull')
-        set_displayAddNewModState(false)
-        dispatch(set_useSettingState({}))
+      const postbody = {
+        name:'modlist.json',
+        field:'modlist',
+        data:new_modelist,
+      }
+      console.log("postbody",postbody)
+      const saveResult = await putRequest(url,postbody)
+      if(saveResult.status){
+          alert('save successfull')
+          set_displayAddNewModState(false)
+          dispatch(set_useSettingState({}))
+      }
+      else{
+          alert('save fail')
+      }
     }
     else{
-        alert('save fail')
+      alert("search modlist fail")
     }
-  }
-  else{
-    alert("search modlist fail")
-  }
   }
 
   function extractDetailDiv(detail_div_ref: RefObject<HTMLDivElement>):mod_detail{
