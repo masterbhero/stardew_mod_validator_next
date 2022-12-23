@@ -16,7 +16,7 @@ export default function useModList() {
       try {
         const response = await fetch("./api/lookup-all-modlist");
         const json: lookupAllModResponse = await response.json();
-        // console.log(json.data)
+        console.log("useModList",json.data)
         setData(json.data);
       } catch (err) {
         setError(err);

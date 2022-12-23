@@ -61,7 +61,7 @@ function ModList() {
                     await loopArray(mod,'toggle',{field:"editMode"});
                     !mod.displayModDetail && await loopArray(mod,'toggle',{field:"displayModDetail"});
                   }}>Edit</button>
-                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'remove_mod')}}>Remove</button>
+                  <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {await loopArray(mod,'remove_mod',{update_mod_list:true})}}>Remove</button>
                 </div>
                 <div className={``}>
                   {
@@ -177,14 +177,16 @@ function ModList() {
   }
 
   function removeModFromArr(mod:modListDisplay,loop_modlist:modListDisplay[]){
-    var confirm_result:boolean = confirm(`are you sure you want to remove ${mod.name}`)
-    if(confirm_result){
-      const index = loop_modlist.indexOf(mod)
-      if (index !== -1) {
-        loop_modlist.splice(index, 1);
-      }
-    }
-    return loop_modlist
+    const confirm_result:boolean = confirm(`are you sure you want to remove ${mod.name}`)
+    // console.log(confirm_result)
+    // if(confirm_result === true){
+    //   const index = loop_modlist.indexOf(mod)
+    //   if (index !== -1) {
+    //     loop_modlist.splice(index, 1);
+    //   }
+    // }
+    // return loop_modlist
+    return confirm_result
   }
 
   function toggleModData(mod:modListDisplay,loop_modlist:modListDisplay[],field:"displayDependency" | "displayAddDependency" | "displayModDetail" | "editMode"){
@@ -386,7 +388,7 @@ function ModList() {
     // console.log(new_mod)
     let new_modlist = [...modListDisplayState]
     new_modlist.push(new_mod)
-    await updateModListJson(new_modlist)
+    await updateModListJson(new_modlist,{addMod:{status:true,mod_added:new_mod}})
   }
 
   async function extractModDetailDataAndAddNewDependency(detail_div_ref:RefObject<HTMLDivElement>,mod_list_display_data:modListDisplay){
@@ -421,6 +423,7 @@ function ModList() {
       added_data?:modListDisplay,
     }
   ){
+    let confirmRemoveMod = false;
     let new_mod_list = [...modListDisplayState]
     const loopArr = ((loop_modlist:modListDisplay[]) => {
       for(let mod of loop_modlist){
@@ -428,7 +431,10 @@ function ModList() {
           // action after found
           switch(action){
             case 'remove_mod':
-              removeModFromArr(mod_index,loop_modlist)
+              // option && option.update_mod_list && removeModFromArr(mod_index,loop_modlist)
+              if(option && option.update_mod_list){
+                confirmRemoveMod = removeModFromArr(mod_index,loop_modlist)
+              }
               break;
             case 'toggle':
               option &&
@@ -462,7 +468,12 @@ function ModList() {
     loopArr(new_mod_list)
     console.log("new_mod_list",new_mod_list)
     setModListDisplayState(new_mod_list)
-    option?.update_mod_list && (await updateModListJson(new_mod_list))
+    if(action === "remove_mod" && confirmRemoveMod){
+      option?.update_mod_list && (await updateModListJson(new_mod_list,{removeMod:{status:true,mod_removed:mod_index}}))
+    }
+    else{
+      option?.update_mod_list && (await updateModListJson(new_mod_list))
+    }
   }
 
   function replaceElements(original: modList[], newArray: modList[]) {
@@ -474,10 +485,38 @@ function ModList() {
     });
   }
 
-  async function updateModListJson(new_mod_list:modListDisplay[]){
+  async function updateModListJson(new_mod_list:modListDisplay[] , option?:{
+    removeMod?:{
+      status?:boolean,
+      mod_removed?:modListDisplay
+    }
+    addMod?:{
+      status?:boolean,
+      mod_added?:modListDisplay
+    }
+  }){
     const search_params = new URLSearchParams( { "path":"modlist.json" } )
     const getModListResult = await getRequest(`./api/get-setting`,search_params)
-    const new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
+    let new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
+    //check remove
+    if (option && option.removeMod && option.removeMod.status && option.removeMod.mod_removed) {
+      const index = new_updated_with_unedit_modlist.findIndex((modIndex) => {
+        return modIndex.id === option.removeMod?.mod_removed?.id
+      })
+      if(index !== -1){
+        new_updated_with_unedit_modlist.splice(index,1)
+      }
+    }
+    else if (option && option.addMod && option.addMod.status && option.addMod.mod_added) {
+      // const index = new_updated_with_unedit_modlist.findIndex((modIndex) => {
+      //   return modIndex.id === option.removeMod?.mod_removed?.id
+      // })
+      // if(index !== -1){
+      //   new_updated_with_unedit_modlist.splice(index,1)
+      // }
+      new_updated_with_unedit_modlist.push(option.addMod.mod_added)
+    } 
+    //check remove
     if(getModListResult.status){
       const url = `./api/edit-setting`
       let new_modelist:modList[] = convertModListDisplayArrayToModListArray(new_updated_with_unedit_modlist)
