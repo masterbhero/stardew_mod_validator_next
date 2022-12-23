@@ -64,6 +64,7 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
       const data = await getModList();
       setInstalledModList(data.data)
       setModListDisplayState(convertModListToModListDisplay(sortByCreateDateDESC(modList)))
+      console.log("useModListUnEdit",modListDisplayState)
     }
     fetchData();
   },[modList])
@@ -76,8 +77,22 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
     return data;
   }
 
+  function checkRefFolder(mod: modList){
+    if(!mod.refFolder){
+      return true
+    }
+    else{
+      if(!installedModList.includes(mod.refFolder)){
+        return true
+      }
+      else{
+        return false
+      }
+    }
+  }
+
   function checkModDependencies(mod: modList): 1 | 2 | 3 {
-    if (!installedModList.includes(mod.name)) {
+    if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
       if (mod.dependency) {
         // console.log(mod)
         if(!mod.dependency || mod.dependency.length === 0){
@@ -94,8 +109,12 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
       // return 2;
       return 3;
     } else {
+      // console.log(mod)
       if (mod.dependency) {
         // console.log(mod.dependency)
+        if(!mod.dependency || mod.dependency.length === 0){
+          return 1;
+        }
         for (const dependency of mod.dependency) {
           if (checkModDependencies(dependency) !== 1) {
             return 2;

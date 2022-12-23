@@ -76,8 +76,22 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
     return data;
   }
 
+  function checkRefFolder(mod: modList){
+    if(!mod.refFolder){
+      return true
+    }
+    else{
+      if(!installedModList.includes(mod.refFolder)){
+        return true
+      }
+      else{
+        return false
+      }
+    }
+  }
+
   function checkModDependencies(mod: modList): 1 | 2 | 3 {
-    if (!installedModList.includes(mod.name)) {
+    if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
       if (mod.dependency) {
         // console.log(mod)
         if(!mod.dependency || mod.dependency.length === 0){

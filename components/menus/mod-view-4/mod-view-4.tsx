@@ -22,6 +22,7 @@ import { set_useSettingState } from "../../../store/useSettingSlice";
 import { genRandomId } from "../../../functions/others/gen-random-id";
 import { formatDate } from "../../../functions/format/format-iso-to-date";
 import { useModListUnEdit } from "../../../hooks/useModListUnEdit";
+import Link from "next/link";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -32,6 +33,14 @@ function ModList() {
   const dispatch = useDispatch();
 
   const [displayAddNewModState,set_displayAddNewModState] = useState<boolean>(false)
+
+  const searchCategoryList = ["name","tag"]
+
+  const [selectedSearchCategory,set_selectedSearchCategory] = useState(searchCategoryList[0])
+
+  const searchBar = createRef<HTMLInputElement>()
+
+  // const [displayDependencyGlobal,set_displayDependencyGlobal]
 
   // setModListDisplayState(useModListDisplay(modList))
   // console.log(modListDisplayState)
@@ -53,8 +62,16 @@ function ModList() {
             <div id="main-box">
               <div id="main" className="tw-inline-flex tw-flex-col tw-border-2 tw-border-white tw-mb-4 tw-p-4">
                 <div id="mod_name" className={`tw-mb-4`}>
-                  <div className={`tw-flex tw-justify-center ${mod.status === 1 ? "tw-text-success" : mod.status === 2 ? "tw-text-warning" : "tw-text-danger"}`}>{mod.name}</div>
-                  <div>Add {formatDate(mod.create_date)}</div>
+                  <div className={`tw-flex tw-justify-center ${mod.status === 1 ? "tw-text-success" : mod.status === 2 ? "tw-text-warning" : "tw-text-danger"}`}>
+                    <div>{mod.name}</div>
+                    <div className="tw-flex tw-items-center">
+                      {/* <Link href="https://twitter.com/" passHref> */}
+                      <Link href={`${mod.url}`} target="_blank" passHref>
+                        <Image src={UrlIcon} alt="url-icon" className={`tw-w-6 tw-ml-2`} />
+                      </Link>
+                    </div>
+                  </div>
+                  <div>Added {formatDate(mod.create_date)}</div>
                 </div>
                 <div className="tw-flex tw-justify-between tw-mb-4">
                   <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {
@@ -130,10 +147,10 @@ function ModList() {
                           {
                             mod.dependency && mod.dependency.length > 0
                             ? (
-                              <div>hide dependency</div>
+                              <div className="tw-text-success-border">hide dependency</div>
                             )
                             : (
-                              <div>no dependency</div>
+                              <div className="tw-text-gray-500">no dependency</div>
                             )
                           }
                         </div>
@@ -150,10 +167,10 @@ function ModList() {
                           {
                             mod.dependency && mod.dependency.length > 0
                             ? (
-                              <div>show dependency</div>
+                              <div className="tw-text-success">show dependency</div>
                             )
                             : (
-                              <div>no dependency</div>
+                              <div className="tw-text-gray-500">no dependency</div>
                             )
                           }
                         </div>
@@ -653,6 +670,10 @@ function ModList() {
   function filterModListByName(searchTerm: string): modListDisplay[] {
     return modListUnEdit.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }
+
+  function filterModListByTag(searchTerm: string): modListDisplay[] {
+    return modListUnEdit.filter(mod => mod.tag && mod.tag.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+  }
   
   
   return <div className="tw-flex tw-flex-col">
@@ -679,10 +700,48 @@ function ModList() {
     </div>
     <div id="display_mod" className="tw-ml-10">
       <div className={`tw-flex tw-mb-4`}>
-        <div className="tw-mr-4">Search Mod</div>
+        <div className="tw-flex tw-items-center tw-mr-4">Search Mod</div>
         <input type="text" className={`tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-pl-2`} 
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {setModListDisplayState(filterModListByName(event.target.value))}}
-        />
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            // setModListDisplayState(filterModListByName(event.target.value))}
+            switch(selectedSearchCategory){
+              case "name":
+                setModListDisplayState(filterModListByName(event.target.value))
+                break;
+              case "tag":
+                setModListDisplayState(filterModListByTag(event.target.value))
+                break;
+              default:
+                break;
+            }
+          }
+        } ref={searchBar}/>
+        <div>
+        <select 
+          onChange={(event) => {
+            // console.log("event.target.value",event.target.value);
+            set_selectedSearchCategory(event.target.value);
+            // console.log("selectedSearchCategory",selectedSearchCategory);
+            // switch(selectedSearchCategory){
+            //   case "name":
+            //     searchBar.current?.value && setModListDisplayState(filterModListByName(searchBar.current.value))
+            //     break;
+            //   case "tag":
+            //     searchBar.current?.value && setModListDisplayState(filterModListByTag(searchBar.current.value))
+            //     break;
+            //   default:
+            //     break;
+            // };
+          }}
+          className={`tw-bg-transparent tw-border-2 tw-border-white tw-ml-4 tw-rounded-md tw-p-2`}
+        >
+          {searchCategoryList.map((item) => (
+            <option key={item} value={item} className={`tw-bg-black`}>
+              {item}
+            </option>
+          ))}
+        </select>
+        </div>
       </div>
       <div>{renderModList(modListDisplayState)}</div>
     </div>
