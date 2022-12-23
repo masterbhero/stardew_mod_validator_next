@@ -15,10 +15,28 @@ export default function Home(){
     //     }
     // }
 
+    function ReturnPage(){
+        switch(currentPage){
+            case "init":
+                return (<ModView4></ModView4>)
+            case "ModList":
+                return (<ModView4></ModView4>)
+            case "FileList":
+                return (<div>FileList</div>)
+            case "ModMenu":
+                return (<div>ModMenu</div>)
+            case "Setting":
+                return (<div>Setting</div>)
+            default:
+                return (<ModView4></ModView4>)
+        }
+    }
+
     return (
         <div className="tw-text-2xl tw-ml-4">
-            {currentPage}
-            <ModView4></ModView4>
+            {/* {currentPage} */}
+            {/* <ModView4></ModView4> */}
+            {ReturnPage()}
         </div>
     )
 }
