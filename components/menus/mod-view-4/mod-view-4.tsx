@@ -24,11 +24,13 @@ import { formatDate } from "../../../functions/format/format-iso-to-date";
 import { useModListUnEdit } from "../../../hooks/useModListUnEdit";
 import Link from "next/link";
 import { set_keepDisplayDependency } from "../../../store/keepDisplayDependencySlice";
+import { useUniqueTags } from "../../../hooks/useUniqueTags";
 
 function ModList() {
   const modList: modList[] = useModList().data;
   // const modListDisplayState: modListDisplay[] = useModListDisplay(modList);
   // const [modListDisplayState, setModListDisplayState] = useState<modListDisplay[]>(useModListDisplay(modList));
+  const [uniqueTags, setUniqueTags] = useUniqueTags(modList)
   const [modListUnEdit,set_modListUnEdit] = useModListUnEdit(modList);
   const [modListDisplayState, setModListDisplayState] = useModListDisplay(modList);
   const dispatch = useDispatch();
@@ -40,6 +42,10 @@ function ModList() {
   const [selectedSearchCategory,set_selectedSearchCategory] = useState(searchCategoryList[0])
 
   const searchBar = createRef<HTMLInputElement>()
+
+  useEffect(() => {
+    console.log(uniqueTags)
+  })
 
   // const [displayDependencyGlobal,set_displayDependencyGlobal]
 
@@ -721,7 +727,6 @@ function ModList() {
     return modListUnEdit.filter(mod => mod.tag && mod.tag.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
   }
   
-  
   return <div className="tw-flex tw-flex-col">
     <div className="tw-mt-4 tw-flex tw-flex-col">
       <div>Total : {getTotal(modListDisplayState)}</div>
@@ -745,7 +750,10 @@ function ModList() {
       <div className="tw-inline-flex tw-mb-10">{displayAddNewModState && AddNewMod("Mod")}</div>
     </div>
     <div id="display_mod" className="tw-ml-10">
-      <div className={`tw-flex tw-mb-4`}>
+      <div id="mod sorter" className={`tw-flex tw-mb-4`}>                        
+        <div className="tw-flex tw-items-center tw-mr-4">Sort Mod</div>
+      </div>
+      <div id="mod search bar" className={`tw-flex tw-mb-4`}>
         <div className="tw-flex tw-items-center tw-mr-4">Search Mod</div>
         <input type="text" className={`tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-pl-2`} 
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -795,3 +803,8 @@ function ModList() {
 }
 
 export default ModList;
+
+//* - show/hide certain type of mod 
+//* 	- ie hide all modding tool cause it's not ganna be search much
+//*  - ie only show uninstalled or incomplete mod to hide all completed mod
+//* - auto import from template to don't have to rewrite them multiple time
