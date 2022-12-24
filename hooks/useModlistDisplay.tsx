@@ -2,11 +2,15 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { apiResponseDefault } from "../interface/api-response";
 import modList, { modListDisplay } from "../interface/modList";
+import { select_keepDisplayDependency } from "../store/keepDisplayDependencySlice";
 import { select_useSettingState, set_useSettingState } from "../store/useSettingSlice";
 
 export function useModListDisplay(modList: modList[] | modListDisplay[]):[modListDisplay[],Dispatch<SetStateAction<modListDisplay[]>>] {
   const [modListDisplayState, setModListDisplayState] = useState<modListDisplay[]>([]);
   const [installedModList,setInstalledModList] = useState<string[]>([])
+
+  // const currentPage = useSelector(select_currentPageState)
+  const keepDisplayDependency:string[] = useSelector(select_keepDisplayDependency)
 
   const convertModListToModListDisplay = (
     modList: modList[] | modListDisplay[]
@@ -19,7 +23,7 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
           name: mod.name,
           create_date: mod.create_date,
           displayAddDependency: false,
-          displayDependency: false,
+          displayDependency: (mod.dependency && mod.dependency.length > 0 && keepDisplayDependency.includes(mod.id)) ? true : false,
           displayMod: false,
           dependency: mod.dependency
             ? convertModListToModListDisplay(mod.dependency)
@@ -30,7 +34,7 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
           url: mod.url,
           refFolder: mod.refFolder,
           tag: mod.tag,
-          status: checkModDependencies(mod),
+          status: getModStatus(mod),
           editMode: false,
         };
 
@@ -44,7 +48,8 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
           dependency: modDisplay.dependency
             ? convertModListToModListDisplay(modDisplay.dependency)
             : [],
-          status:checkModDependencies(modDisplay),
+          displayDependency: (modDisplay.dependency && modDisplay.dependency.length > 0 && keepDisplayDependency.includes(modDisplay.id)) ? true : false,
+          status:getModStatus(modDisplay),
         };
 
         return updatedModDisplay;
@@ -76,49 +81,84 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
     return data;
   }
 
-  function checkRefFolder(mod: modList){
-    if(!mod.refFolder){
-      return true
+  // function checkRefFolder(mod: modList){
+  //   if(!mod.refFolder){
+  //     return true
+  //   }
+  //   else{
+  //     if(!installedModList.includes(mod.refFolder)){
+  //       return true
+  //     }
+  //     else{
+  //       return false
+  //     }
+  //   }
+  // }
+
+  // function checkModDependencies(mod: modList): 1 | 2 | 3 {
+  //   if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
+  //     if (mod.dependency) {
+  //       // console.log(mod)
+  //       if(!mod.dependency || mod.dependency.length === 0){
+  //         return 3;
+  //       }
+  //       else{
+  //         for (const dependency of mod.dependency) {
+  //           if (checkModDependencies(dependency) === 3) {
+  //             return 3;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     // return 2;
+  //     return 3;
+  //   } else {
+  //     if (mod.dependency) {
+  //       // console.log(mod.dependency)
+  //       for (const dependency of mod.dependency) {
+  //         if (checkModDependencies(dependency) !== 1) {
+  //           return 2;
+  //         }
+  //       }
+  //     }
+  //     return 1;
+  //   }
+  // }
+
+  function getModStatus(mod: modList): 1 | 2 | 3 {
+    // Check if name or refFolder is in installedModList
+    const isInstalled = installedModList.includes(mod.name) || (mod.refFolder && installedModList.includes(mod.refFolder));
+
+    // Check if all dependencies are installed
+    let allDependenciesInstalled = true;
+    if (mod.dependency) {
+      for (const dependency of mod.dependency) {
+        if (getModStatus(dependency) !== 1) {
+          allDependenciesInstalled = false;
+          break;
+        }
+      }
     }
-    else{
-      if(!installedModList.includes(mod.refFolder)){
-        return true
+
+    // Return the correct status
+    if (isInstalled && (!mod.dependency || allDependenciesInstalled)) {
+      return 1;
+    } else if (allDependenciesInstalled || isInstalled) {
+      // return 2;
+      if(mod.dependency?.length === 0){
+        return 3;
+      }
+      else if(!isInstalled && (!mod.dependency || mod.dependency.length ===0)){        
+        return 3;
       }
       else{
-        return false
+        return 2;
       }
+    } else {
+      return 3;
     }
   }
 
-  function checkModDependencies(mod: modList): 1 | 2 | 3 {
-    if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
-      if (mod.dependency) {
-        // console.log(mod)
-        if(!mod.dependency || mod.dependency.length === 0){
-          return 3;
-        }
-        else{
-          for (const dependency of mod.dependency) {
-            if (checkModDependencies(dependency) === 3) {
-              return 3;
-            }
-          }
-        }
-      }
-      // return 2;
-      return 3;
-    } else {
-      if (mod.dependency) {
-        // console.log(mod.dependency)
-        for (const dependency of mod.dependency) {
-          if (checkModDependencies(dependency) !== 1) {
-            return 2;
-          }
-        }
-      }
-      return 1;
-    }
-  }
   
   function sortByCreateDateASC<T extends modList | modListDisplay>(modList: T[]): T[] {
     return modList.sort((a, b) => {
@@ -139,3 +179,12 @@ export function useModListDisplay(modList: modList[] | modListDisplay[]):[modLis
 
   return [modListDisplayState, setModListDisplayState]
 }
+
+// check if mod/dependency is install with that name to check status 
+//  - no need just change folder structer to match mod name
+
+// don't reset displayDependency or keep dependency display when add new mod it's annoying
+
+// make status 2 if all dependency is install but main mod is not install
+
+// restructer folder

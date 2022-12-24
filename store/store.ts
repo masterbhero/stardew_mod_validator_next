@@ -2,12 +2,14 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { useSettingSlice } from "./useSettingSlice";
 import { createWrapper } from "next-redux-wrapper";
 import { currentPageSlice } from "./currentPageSlice";
+import { keepDisplayDependencySlice } from "./keepDisplayDependencySlice";
 
 const makeStore = () =>
   configureStore({
     reducer: {
       [useSettingSlice.name]: useSettingSlice.reducer,
       [currentPageSlice.name]: currentPageSlice.reducer,
+      [keepDisplayDependencySlice.name]: keepDisplayDependencySlice.reducer,
     },
     devTools: true,
   });

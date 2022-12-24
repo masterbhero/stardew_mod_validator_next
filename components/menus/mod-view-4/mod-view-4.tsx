@@ -23,6 +23,7 @@ import { genRandomId } from "../../../functions/others/gen-random-id";
 import { formatDate } from "../../../functions/format/format-iso-to-date";
 import { useModListUnEdit } from "../../../hooks/useModListUnEdit";
 import Link from "next/link";
+import { set_keepDisplayDependency } from "../../../store/keepDisplayDependencySlice";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -53,6 +54,16 @@ function ModList() {
   //   console.log(checkStringForModListDisplayProperty("displayAddDependency"))
   //   console.log(checkStringForModListDisplayProperty("datadd"))
   // },[])
+
+  async function btnClickShowDependency(mod:modListDisplay){
+    await loopArray(mod,'toggle',{field:"displayDependency"}) 
+    dispatch(set_keepDisplayDependency({type:"add",id:mod.id}))
+  }
+
+  async function btnClickHideDependency(mod:modListDisplay){
+    await loopArray(mod,'toggle',{field:"displayDependency"}) 
+    dispatch(set_keepDisplayDependency({type:"remove",id:mod.id}))
+  }
 
   function renderModList(modList: modListDisplay[]) {
     return modList.map((mod) => {
@@ -140,8 +151,14 @@ function ModList() {
                 ? (
                   <div>
                     <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                      mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
-                    }>
+                      // mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
+                      (
+                        mod.dependency && mod.dependency.length > 0  &&
+                        (
+                          btnClickHideDependency(mod)
+                        )
+                      )
+                    }}>
                         <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
                         <div>
                           {
@@ -160,8 +177,13 @@ function ModList() {
                 : (
                   <div>
                     <button className="tw-inline-flex tw-justify-center tw-items-center" onClick={async () => {
-                      mod.dependency && mod.dependency.length > 0  && await loopArray(mod,'toggle',{field:"displayDependency"})}
-                    }>
+                      (
+                        mod.dependency && mod.dependency.length > 0  && 
+                        (
+                          btnClickShowDependency(mod)
+                        )
+                      )
+                    }}>
                         <Image src={ShowDependencyIcon} alt="add-icon" className={`${mod.displayDependency ? `tw-rotate-180 tw-duration-300` : `tw-rotate-90 tw-duration-300`} tw-w-6 tw-mr-2`}/>
                         <div>
                           {
@@ -512,17 +534,41 @@ function ModList() {
       mod_added?:modListDisplay
     }
   }){
+    console.log(new_mod_list,option)
     const search_params = new URLSearchParams( { "path":"modlist.json" } )
     const getModListResult = await getRequest(`./api/get-setting`,search_params)
     let new_updated_with_unedit_modlist:modList[] = replaceElements(modListUnEdit,new_mod_list)
     //check remove
     if (option && option.removeMod && option.removeMod.status && option.removeMod.mod_removed) {
-      const index = new_updated_with_unedit_modlist.findIndex((modIndex) => {
-        return modIndex.id === option.removeMod?.mod_removed?.id
+      //it's only loop main mod not dependency
+      // const index = new_updated_with_unedit_modlist.findIndex((modIndex) => {
+      //   return modIndex.id === option.removeMod?.mod_removed?.id
+      // })
+      // console.log(index)
+      // if(index !== -1){
+      //   console.log("began remove")
+      //   new_updated_with_unedit_modlist.splice(index,1)
+      //   console.log("remove complete",new_updated_with_unedit_modlist)
+      // }
+      const loopArrToRemove = ((mod_array_to_check:modList[]) => {
+        for(let mod_index of mod_array_to_check){
+          if(_.isEqual(mod_index,option.removeMod?.mod_removed)){
+            // action after found
+            const index = mod_array_to_check.findIndex((modIndex) => {
+              return modIndex.id === option.removeMod?.mod_removed?.id
+            })
+            if(index !== -1){
+              console.log("began remove")
+              mod_array_to_check.splice(index,1)
+              // console.log("remove complete",new_updated_with_unedit_modlist)
+            }
+          }
+          if(mod_index.dependency && mod_index.dependency.length > 0){
+            loopArrToRemove(mod_index.dependency)
+          }
+        }
       })
-      if(index !== -1){
-        new_updated_with_unedit_modlist.splice(index,1)
-      }
+      loopArrToRemove(new_updated_with_unedit_modlist)
     }
     else if (option && option.addMod && option.addMod.status && option.addMod.mod_added) {
       // const index = new_updated_with_unedit_modlist.findIndex((modIndex) => {

@@ -30,7 +30,7 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
           url: mod.url,
           refFolder: mod.refFolder,
           tag: mod.tag,
-          status: checkModDependencies(mod),
+          status: getModStatus(mod),
           editMode: false,
         };
 
@@ -44,7 +44,7 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
           dependency: modDisplay.dependency
             ? convertModListToModListDisplay(modDisplay.dependency)
             : [],
-          status:checkModDependencies(modDisplay),
+          status:getModStatus(modDisplay),
         };
 
         return updatedModDisplay;
@@ -77,51 +77,82 @@ export function useModListUnEdit(modList: modList[] | modListDisplay[]):[modList
     return data;
   }
 
-  function checkRefFolder(mod: modList){
-    if(!mod.refFolder){
-      return true
+  // function checkRefFolder(mod: modList){
+  //   if(!mod.refFolder){
+  //     return true
+  //   }
+  //   else{
+  //     if(!installedModList.includes(mod.refFolder)){
+  //       return true
+  //     }
+  //     else{
+  //       return false
+  //     }
+  //   }
+  // }
+
+  // function checkModDependencies(mod: modList): 1 | 2 | 3 {
+  //   if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
+  //     if (mod.dependency) {
+  //       // console.log(mod)
+  //       if(!mod.dependency || mod.dependency.length === 0){
+  //         return 3;
+  //       }
+  //       else{
+  //         for (const dependency of mod.dependency) {
+  //           if (checkModDependencies(dependency) === 3) {
+  //             return 3;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     // return 2;
+  //     return 3;
+  //   } else {
+  //     // console.log(mod)
+  //     if (mod.dependency) {
+  //       // console.log(mod.dependency)
+  //       if(!mod.dependency || mod.dependency.length === 0){
+  //         return 1;
+  //       }
+  //       for (const dependency of mod.dependency) {
+  //         if (checkModDependencies(dependency) !== 1) {
+  //           return 2;
+  //         }
+  //       }
+  //     }
+  //     return 1;
+  //   }
+  // }
+
+  function getModStatus(mod: modList): 1 | 2 | 3 {
+    // Check if name or refFolder is in installedModList
+    const isInstalled = installedModList.includes(mod.name) || (mod.refFolder && installedModList.includes(mod.refFolder));
+
+    // Check if all dependencies are installed
+    let allDependenciesInstalled = true;
+    if (mod.dependency) {
+      for (const dependency of mod.dependency) {
+        if (getModStatus(dependency) !== 1) {
+          allDependenciesInstalled = false;
+          break;
+        }
+      }
     }
-    else{
-      if(!installedModList.includes(mod.refFolder)){
-        return true
+
+    // Return the correct status
+    if (isInstalled && (!mod.dependency || allDependenciesInstalled)) {
+      return 1;
+    } else if (allDependenciesInstalled || isInstalled) {
+      // return 2;
+      if(mod.dependency?.length === 0){
+        return 3;
       }
       else{
-        return false
+        return 2;
       }
-    }
-  }
-
-  function checkModDependencies(mod: modList): 1 | 2 | 3 {
-    if (!installedModList.includes(mod.name) && checkRefFolder(mod)) {
-      if (mod.dependency) {
-        // console.log(mod)
-        if(!mod.dependency || mod.dependency.length === 0){
-          return 3;
-        }
-        else{
-          for (const dependency of mod.dependency) {
-            if (checkModDependencies(dependency) === 3) {
-              return 3;
-            }
-          }
-        }
-      }
-      // return 2;
-      return 3;
     } else {
-      // console.log(mod)
-      if (mod.dependency) {
-        // console.log(mod.dependency)
-        if(!mod.dependency || mod.dependency.length === 0){
-          return 1;
-        }
-        for (const dependency of mod.dependency) {
-          if (checkModDependencies(dependency) !== 1) {
-            return 2;
-          }
-        }
-      }
-      return 1;
+      return 3;
     }
   }
   
