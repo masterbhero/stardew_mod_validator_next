@@ -25,6 +25,7 @@ import { useModListUnEdit } from "../../../hooks/useModListUnEdit";
 import Link from "next/link";
 import { set_keepDisplayDependency } from "../../../store/keepDisplayDependencySlice";
 import { useUniqueTags } from "../../../hooks/useUniqueTags";
+import { useHiddenTags } from "../../../hooks/useHiddenTags";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -33,9 +34,13 @@ function ModList() {
   const [uniqueTags, setUniqueTags] = useUniqueTags(modList)
   const [modListUnEdit,set_modListUnEdit] = useModListUnEdit(modList);
   const [modListDisplayState, setModListDisplayState] = useModListDisplay(modList);
+  const [hiddenTags,set_hiddenTags] = useHiddenTags(modList)
+
   const dispatch = useDispatch();
 
   const [displayAddNewModState,set_displayAddNewModState] = useState<boolean>(false)
+
+  const [displayModModal,set_displayModModal] = useState<boolean>(false)
 
   const searchCategoryList = ["name","tag"]
 
@@ -60,6 +65,12 @@ function ModList() {
   //   console.log(checkStringForModListDisplayProperty("displayAddDependency"))
   //   console.log(checkStringForModListDisplayProperty("datadd"))
   // },[])
+
+  async function getHiddenTagsSetting(){
+    // const http_data = await getRequest(`./api/get-setting`,`path=setting.json`)
+    // console.log("http_data",http_data)
+    set_displayModModal(!displayModModal)
+  }
 
   async function btnClickShowDependency(mod:modListDisplay){
     await loopArray(mod,'toggle',{field:"displayDependency"}) 
@@ -89,8 +100,26 @@ function ModList() {
                     </div>
                   </div>
                   <div>Added {formatDate(mod.create_date)}</div>
+                  <div className="tw-flex">
+                    <div className="tw-mr-4">
+                      tags : 
+                    </div>
+                    {
+                      mod.tag && mod.tag.map((value,index) => {
+                        return (
+                          <div key={index} 
+                            className="tw-bg-gray-800 tw-text-white
+                              tw-px-2 tw-rounded-lg tw-mr-2
+                            "
+                          >
+                            {value}
+                          </div>                       
+                        )
+                      })
+                    }
+                  </div>
                 </div>
-                <div className="tw-flex tw-justify-between tw-mb-4">
+                <div id="button-area" className="tw-flex tw-justify-between tw-mb-4">
                   <button className="tw-border-2 tw-border-white tw-px-2" onClick={async () => {
                     await loopArray(mod,'toggle',{field:"editMode"});
                     !mod.displayModDetail && await loopArray(mod,'toggle',{field:"displayModDetail"});
@@ -751,7 +780,20 @@ function ModList() {
     </div>
     <div id="display_mod" className="tw-ml-10">
       <div id="mod sorter" className={`tw-flex tw-mb-4`}>                        
-        <div className="tw-flex tw-items-center tw-mr-4">Sort Mod</div>
+        <div className="tw-flex tw-items-center tw-mr-4">Mods Display</div>
+        <button 
+          className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2"
+          onClick={() => {getHiddenTagsSetting()}}
+        >
+          Select
+        </button>
+        {
+          !displayModModal && (
+            <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2">
+              search
+            </div>
+          )
+        }
       </div>
       <div id="mod search bar" className={`tw-flex tw-mb-4`}>
         <div className="tw-flex tw-items-center tw-mr-4">Search Mod</div>

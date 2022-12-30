@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction, Dispatch } from 'react';
 import modList from "../interface/modList"
 
-export function useUniqueTags(modLists: modList[]) {
+export function useUniqueTags(modLists: modList[]):[string[],Dispatch<SetStateAction<string[]>>] {
   const [uniqueTags, setUniqueTags] = useState<string[]>([]);
 
   useEffect(() => {

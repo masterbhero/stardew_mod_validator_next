@@ -2,7 +2,7 @@
 export function lookup_list_config(){
     return [
         // 'setting.json','modlist.json'
-        {name:'setting.json',lookup_field:['stardew_location']},
+        {name:'setting.json',lookup_field:['stardew_location','hidden_tags','shown_tags']},
         {name:'modlist.json',lookup_field:['modlist']},
     ]
 }
@@ -10,7 +10,7 @@ export function lookup_list_config(){
 export function lookup_list_config_create(){
     return [
         // 'setting.json','modlist.json'
-        {name:'setting.json',lookup_field:[{name:'stardew_location',init:""}]},
+        {name:'setting.json',lookup_field:[{name:'stardew_location',init:""},{name:'hidden_tags',init:[]},{name:'shown_tags',init:""}]},
         {name:'modlist.json',lookup_field:[{name:'modlist',init:[]}]},
     ]
 }

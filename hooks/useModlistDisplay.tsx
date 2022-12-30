@@ -4,6 +4,7 @@ import { apiResponseDefault } from "../interface/api-response";
 import modList, { modListDisplay } from "../interface/modList";
 import { select_keepDisplayDependency } from "../store/keepDisplayDependencySlice";
 import { select_useSettingState, set_useSettingState } from "../store/useSettingSlice";
+import { useHiddenTags } from "./useHiddenTags";
 
 export function useModListDisplay(modList: modList[] | modListDisplay[]):[modListDisplay[],Dispatch<SetStateAction<modListDisplay[]>>] {
   const [modListDisplayState, setModListDisplayState] = useState<modListDisplay[]>([]);
