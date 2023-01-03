@@ -27,6 +27,7 @@ import { set_keepDisplayDependency } from "../../../store/keepDisplayDependencyS
 import { useUniqueTags } from "../../../hooks/useUniqueTags";
 import { useHiddenTags } from "../../../hooks/useHiddenTags";
 import { ModStatus } from "./components/mod-status";
+import { useHiddenStatus } from "../../../hooks/useHiddenStatus";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -36,12 +37,15 @@ function ModList() {
   const [modListUnEdit,set_modListUnEdit] = useModListUnEdit(modList);
   const [modListDisplayState, setModListDisplayState] = useModListDisplay(modList);
   const [hiddenTags,set_hiddenTags] = useHiddenTags(modList)
+  const [hiddenStatus,set_hiddenStatus] = useHiddenStatus(modList)
 
   const dispatch = useDispatch();
 
   const [displayAddNewModState,set_displayAddNewModState] = useState<boolean>(false)
 
-  const [displayModModal,set_displayModModal] = useState<boolean>(false)
+  const [displaySelectModDisplayModal,set_displaySelectModDisplayModal] = useState<boolean>(false)
+
+  const statusList = [1,2,3]
 
   const searchCategoryList = ["name","tag"]
 
@@ -77,7 +81,87 @@ function ModList() {
     ){
       const tags = http_data.data.hidden_tags as string[]
       set_hiddenTags(tags)
-      set_displayModModal(!displayModModal)
+      set_displaySelectModDisplayModal(!displaySelectModDisplayModal)
+    }
+  }
+
+  async function updateHiddenTags(event: ChangeEvent<HTMLInputElement>,tag:string){
+    const http_data = await getRequest(`./api/get-setting`,`path=setting.json`)
+    if(
+      http_data.data.hasOwnProperty("stardew_location") &&
+      http_data.data.hasOwnProperty("hidden_tags") &&
+      (Array.isArray(http_data.data.hidden_tags) && http_data.data.hidden_tags.every((item:any) => typeof item === 'string'))
+    ){
+      let tags = [...http_data.data.hidden_tags as string[]]
+      console.log(event)
+      if(!event.target.checked){
+        //default false mean tag is hide so take it out
+        const index = tags.findIndex((tags_index) => {
+          return tags_index === tag
+        })
+        if(index !== -1){
+          tags.splice(index,1)
+        }
+      }
+      else{
+        //default true mean tag is not hide so put it in hidden tags
+        tags.push(tag)
+      }
+      const update_result = await putRequest("./api/edit-setting",{name:"setting.json",field:"hidden_tags",data:tags})
+      if(update_result.status){
+        console.log("update tags success",update_result)
+        if(
+          update_result.data.hasOwnProperty('new_data') &&
+          update_result.data.new_data.hasOwnProperty('hidden_tags') &&
+          Array.isArray(update_result.data.new_data.hidden_tags)
+        ){
+          const new_tags = update_result.data.new_data.hidden_tags as string[]
+          set_hiddenTags(new_tags)
+        }
+      }
+      else{
+        alert("update hidden_tags fail")
+      }
+    }
+  }
+
+  async function updateHiddenStatus(event: ChangeEvent<HTMLInputElement>,status:number){
+    const http_data = await getRequest(`./api/get-setting`,`path=setting.json`)
+    if(
+      http_data.data.hasOwnProperty("stardew_location") &&
+      http_data.data.hasOwnProperty("hidden_status") &&
+      (Array.isArray(http_data.data.hidden_status) && http_data.data.hidden_status.every((item:any) => typeof item === 'number'))
+    ){
+      let status_list_clone = [...http_data.data.hidden_status as number[]]
+      console.log(event)
+      if(!event.target.checked){
+        //default false mean status is hide so take it out
+        const index = status_list_clone.findIndex((status_index) => {
+          return status_index === status
+        })
+        if(index !== -1){
+          status_list_clone.splice(index,1)
+        }
+      }
+      else{
+        //default true mean status is not hide so put it in hidden status
+        status_list_clone.push(status)
+      }
+      const update_result = await putRequest("./api/edit-setting",{name:"setting.json",field:"hidden_status",data:status_list_clone})
+      if(update_result.status){
+        console.log("update status success",update_result)
+        if(
+          update_result.data.hasOwnProperty('new_data') &&
+          update_result.data.new_data.hasOwnProperty('hidden_status') &&
+          Array.isArray(update_result.data.new_data.hidden_status)
+        ){
+          const new_status = update_result.data.new_data.hidden_status as number[]
+          set_hiddenStatus(new_status)
+        }
+      }
+      else{
+        alert("update hidden_status fail")
+      }
     }
   }
 
@@ -98,6 +182,10 @@ function ModList() {
    */
   function checkRenderModListDisplayCondition(mod: modListDisplay){
     if(mod.tag && mod.tag.some(tag => hiddenTags.includes(tag))){
+      return false
+    }
+
+    if(mod.status && hiddenStatus.includes(mod.status)){
       return false
     }
 
@@ -754,22 +842,6 @@ function ModList() {
     );
   }
 
-  // function getTotal(modList: modListDisplay[]): number {
-  //   return modList.length;
-  // }
-  
-  // function getTotalCompleted(modList: modListDisplay[]): number {
-  //   return modList.filter((mod) => mod.status === 1).length;
-  // }
-  
-  // function getTotalInstalledNotDependency(modList: modListDisplay[]): number {
-  //   return modList.filter((mod) => mod.status === 2).length;
-  // }
-  
-  // function getTotalNotInstalled(modList: modListDisplay[]): number {
-  //   return modList.filter((mod) => mod.status === 3).length;
-  // }
-
   function filterModListByName(searchTerm: string): modListDisplay[] {
     return modListUnEdit.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }
@@ -805,24 +877,47 @@ function ModList() {
           Select
         </button>
         {
-          !displayModModal && (
-            <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2">
+          !displaySelectModDisplayModal && (
+            <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-w-2/5">
               <div>tag list</div>
-              <div>
-                {
-                  uniqueTags.map((value,index) => {
-                    return (
-                      <div key={index}>
-                        <div>
-                          <input type="checkbox" name="" id="" />
-                        </div>
-                        <div>
-                          {value}
-                        </div>
+              <div className="tw-h-32 tw-flex tw-flex-col tw-flex-wrap tw-overflow-auto">
+              {
+                uniqueTags.map((value,index) => {
+                  return value !== "" && (
+                    <div key={index} className="tw-flex tw-mr-4">
+                      <div className="tw-mr-2">
+                        <input type="checkbox" name="" id="" checked={hiddenTags.includes(value) ? false : true} onChange={(event) => {updateHiddenTags(event,value)}}/>
                       </div>
-                    )
-                  })
-                }
+                      <div>
+                        {value}
+                      </div>
+                    </div>
+                  )
+                })
+              }
+              </div>
+            </div>
+          )
+        }
+        {
+          !displaySelectModDisplayModal && (
+            <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-w-[10%]">
+              <div>status list</div>
+              <div className="tw-h-32 tw-flex tw-flex-col tw-flex-wrap tw-overflow-auto">
+              {
+                statusList.map((value,index) => {
+                  return (
+                    <div key={index} className="tw-flex tw-mr-4">
+                      <div className="tw-mr-2">
+                        <input type="checkbox" name="" id="" checked={hiddenStatus.includes(value) ? false : true} onChange={(event) => {updateHiddenStatus(event,value)}}/>
+                      </div>
+                      <div>
+                        {value}
+                      </div>
+                    </div>
+                  )
+                })
+              }
               </div>
             </div>
           )
@@ -875,17 +970,6 @@ function ModList() {
       <div>{renderModList(modListDisplayState)}</div>
     </div>
   </div>;
-
-  // function ModStatus(props:{className: string}){
-  //   return (
-  //     <div className={props.className}>
-  //       <div>Total : {getTotal(modListDisplayState)}</div>
-  //       <div>Completed : {getTotalCompleted(modListDisplayState)}</div>
-  //       <div>InComplete : {getTotalInstalledNotDependency(modListDisplayState)}</div>
-  //       <div>NotInstalled : {getTotalNotInstalled(modListDisplayState)}</div>
-  //     </div>
-  //   )
-  // }
 }
 
 export default ModList;

@@ -15,6 +15,7 @@ export function useHiddenTags(modList: modList[] | modListDisplay[]):[string[],D
         async function fetchData(){
             const hidden_tags = await getHiddenTagsSetting()
             set_hiddenTags(hidden_tags)
+            console.log("hidden tags",hidden_tags)
         }
 
         fetchData()
