@@ -877,7 +877,7 @@ function ModList() {
           Select
         </button>
         {
-          !displaySelectModDisplayModal && (
+          displaySelectModDisplayModal && (
             <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-w-2/5">
               <div>tag list</div>
               <div className="tw-h-32 tw-flex tw-flex-col tw-flex-wrap tw-overflow-auto">
@@ -900,7 +900,7 @@ function ModList() {
           )
         }
         {
-          !displaySelectModDisplayModal && (
+          displaySelectModDisplayModal && (
             <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-w-[10%]">
               <div>status list</div>
               <div className="tw-h-32 tw-flex tw-flex-col tw-flex-wrap tw-overflow-auto">
