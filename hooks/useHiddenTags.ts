@@ -2,7 +2,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getRequest } from "../components/functions/http/get";
 import modList , { modListDisplay } from "../interface/modList";
 
-
+/**
+ * get hidden_tags from setting.json
+ * @param modList 
+ * @returns hiddenTags:string[],set_hiddenTags:Dispatch<SetStateAction<string[]>>
+ */
 export function useHiddenTags(modList: modList[] | modListDisplay[]):[string[],Dispatch<SetStateAction<string[]>>]{
 
     const [hiddenTags,set_hiddenTags] = useState<string[]>([])

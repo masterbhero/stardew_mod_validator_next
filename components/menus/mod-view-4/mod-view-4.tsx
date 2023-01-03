@@ -26,6 +26,7 @@ import Link from "next/link";
 import { set_keepDisplayDependency } from "../../../store/keepDisplayDependencySlice";
 import { useUniqueTags } from "../../../hooks/useUniqueTags";
 import { useHiddenTags } from "../../../hooks/useHiddenTags";
+import { ModStatus } from "./components/mod-status";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -67,9 +68,17 @@ function ModList() {
   // },[])
 
   async function getHiddenTagsSetting(){
-    // const http_data = await getRequest(`./api/get-setting`,`path=setting.json`)
-    // console.log("http_data",http_data)
-    set_displayModModal(!displayModModal)
+    const http_data = await getRequest(`./api/get-setting`,`path=setting.json`)
+    console.log("http_data",http_data)
+    if(
+      http_data.data.hasOwnProperty("stardew_location") &&
+      http_data.data.hasOwnProperty("hidden_tags") &&
+      (Array.isArray(http_data.data.hidden_tags) && http_data.data.hidden_tags.every((item:any) => typeof item === 'string'))
+    ){
+      const tags = http_data.data.hidden_tags as string[]
+      set_hiddenTags(tags)
+      set_displayModModal(!displayModModal)
+    }
   }
 
   async function btnClickShowDependency(mod:modListDisplay){
@@ -82,9 +91,22 @@ function ModList() {
     dispatch(set_keepDisplayDependency({type:"remove",id:mod.id}))
   }
 
+  /**
+   * first time this has been added is because I want to check if tag is includes in hidden_tags in setting.json
+   * if it include in there meaning it has been set to hidden
+   * can add some more condition in the future
+   */
+  function checkRenderModListDisplayCondition(mod: modListDisplay){
+    if(mod.tag && mod.tag.some(tag => hiddenTags.includes(tag))){
+      return false
+    }
+
+    return true
+  }
+
   function renderModList(modList: modListDisplay[]) {
     return modList.map((mod) => {
-      return (
+      return checkRenderModListDisplayCondition(mod) && (
         <div key={mod.id} className={`tw-mb-4`}>
           <div className="tw-flex">
             <div id="main-box">
@@ -732,21 +754,21 @@ function ModList() {
     );
   }
 
-  function getTotal(modList: modListDisplay[]): number {
-    return modList.length;
-  }
+  // function getTotal(modList: modListDisplay[]): number {
+  //   return modList.length;
+  // }
   
-  function getTotalCompleted(modList: modListDisplay[]): number {
-    return modList.filter((mod) => mod.status === 1).length;
-  }
+  // function getTotalCompleted(modList: modListDisplay[]): number {
+  //   return modList.filter((mod) => mod.status === 1).length;
+  // }
   
-  function getTotalInstalledNotDependency(modList: modListDisplay[]): number {
-    return modList.filter((mod) => mod.status === 2).length;
-  }
+  // function getTotalInstalledNotDependency(modList: modListDisplay[]): number {
+  //   return modList.filter((mod) => mod.status === 2).length;
+  // }
   
-  function getTotalNotInstalled(modList: modListDisplay[]): number {
-    return modList.filter((mod) => mod.status === 3).length;
-  }
+  // function getTotalNotInstalled(modList: modListDisplay[]): number {
+  //   return modList.filter((mod) => mod.status === 3).length;
+  // }
 
   function filterModListByName(searchTerm: string): modListDisplay[] {
     return modListUnEdit.filter(mod => mod.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -757,12 +779,7 @@ function ModList() {
   }
   
   return <div className="tw-flex tw-flex-col">
-    <div className="tw-mt-4 tw-flex tw-flex-col">
-      <div>Total : {getTotal(modListDisplayState)}</div>
-      <div>Completed : {getTotalCompleted(modListDisplayState)}</div>
-      <div>InComplete : {getTotalInstalledNotDependency(modListDisplayState)}</div>
-      <div>NotInstalled : {getTotalNotInstalled(modListDisplayState)}</div>
-    </div>
+    <ModStatus className="tw-mt-4 tw-flex tw-flex-col" modListDisplayState={modListDisplayState}/>
     <div id="add_new_mod" className="-tw-mb-4 tw-mt-4">
       <div>
       {
@@ -780,9 +797,9 @@ function ModList() {
     </div>
     <div id="display_mod" className="tw-ml-10">
       <div id="mod sorter" className={`tw-flex tw-mb-4`}>                        
-        <div className="tw-flex tw-items-center tw-mr-4">Mods Display</div>
+        <div className="tw-flex tw-items-center tw-mr-4 tw-h-9">Mods Display</div>
         <button 
-          className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2"
+          className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-h-9"
           onClick={() => {getHiddenTagsSetting()}}
         >
           Select
@@ -790,7 +807,23 @@ function ModList() {
         {
           !displayModModal && (
             <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2">
-              search
+              <div>tag list</div>
+              <div>
+                {
+                  uniqueTags.map((value,index) => {
+                    return (
+                      <div key={index}>
+                        <div>
+                          <input type="checkbox" name="" id="" />
+                        </div>
+                        <div>
+                          {value}
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+              </div>
             </div>
           )
         }
@@ -842,6 +875,17 @@ function ModList() {
       <div>{renderModList(modListDisplayState)}</div>
     </div>
   </div>;
+
+  // function ModStatus(props:{className: string}){
+  //   return (
+  //     <div className={props.className}>
+  //       <div>Total : {getTotal(modListDisplayState)}</div>
+  //       <div>Completed : {getTotalCompleted(modListDisplayState)}</div>
+  //       <div>InComplete : {getTotalInstalledNotDependency(modListDisplayState)}</div>
+  //       <div>NotInstalled : {getTotalNotInstalled(modListDisplayState)}</div>
+  //     </div>
+  //   )
+  // }
 }
 
 export default ModList;
