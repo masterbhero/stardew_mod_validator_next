@@ -28,6 +28,8 @@ import { useUniqueTags } from "../../../hooks/useUniqueTags";
 import { useHiddenTags } from "../../../hooks/useHiddenTags";
 import { ModStatus } from "./components/mod-status";
 import { useHiddenStatus } from "../../../hooks/useHiddenStatus";
+import { useModTemplateFilter } from "../../../hooks/useModTemplateFilter";
+import { ModTemplate } from "./components/mod-template";
 
 function ModList() {
   const modList: modList[] = useModList().data;
@@ -38,6 +40,7 @@ function ModList() {
   const [modListDisplayState, setModListDisplayState] = useModListDisplay(modList);
   const [hiddenTags,set_hiddenTags] = useHiddenTags(modList)
   const [hiddenStatus,set_hiddenStatus] = useHiddenStatus(modList)
+  const [filterdModList,setFilterText] = useModTemplateFilter(modListDisplayState)
 
   const dispatch = useDispatch();
 
@@ -54,7 +57,8 @@ function ModList() {
   const searchBar = createRef<HTMLInputElement>()
 
   useEffect(() => {
-    console.log(uniqueTags)
+    // console.log(uniqueTags)
+    // console.log("filterdModList",filterdModList)
   })
 
   // const [displayDependencyGlobal,set_displayDependencyGlobal]
@@ -498,55 +502,70 @@ function ModList() {
         <div>
           Add New {add_type}
         </div>
-        <div id="detail-div" className={`tw-flex tw-flex-col tw-transition-height tw-duration-500 tw-mb-4`} ref={detail_div_ref}>
-          <div className='tw-flex tw-items-center tw-mt-2' id='name'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={NameIcon} alt="name" className={` tw-w-full tw-h-auto`} title="name"/>
+        <div className="tw-flex">
+          <div id="detail-div" className={`tw-flex tw-flex-col tw-transition-height tw-duration-500 tw-mb-4`} ref={detail_div_ref}>
+            <div className='tw-flex tw-items-center tw-mt-2' id='name'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={NameIcon} alt="name" className={` tw-w-full tw-h-auto`} title="name"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="name" className={` tw-pl-1 tw-w-full`}/>
+              </div>
             </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="name" className={` tw-pl-1 tw-w-full`}/>
+            <div className='tw-flex tw-items-center tw-mt-2' id='version'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={VersionIcon} alt="version" className={` tw-w-full tw-h-auto`} title="version"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="version" className={` tw-pl-1 tw-w-full`}/>
+              </div>
+            </div>
+            <div className='tw-flex tw-items-center tw-mt-2' id='description'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={DescriptionIcon} alt="description" className={` tw-w-full tw-h-auto`} title="description"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="description" className={` tw-pl-1 tw-w-full`}/>
+              </div>
+            </div>
+            <div className='tw-flex tw-items-center tw-mt-2' id='tag'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={TagIcon} alt="tag" className={` tw-w-full tw-h-auto`} title="tag"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="tag" className={` tw-pl-1 tw-w-full`}/>
+              </div>
+            </div>
+            <div className='tw-flex tw-items-center tw-mt-2' id='refFolder'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={FolderIcon} alt="refFolder" className={` tw-w-full tw-h-auto`} title="refFolder"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="refFolder" className={` tw-pl-1 tw-w-full`}/>
+              </div>
+            </div>
+            <div className='tw-flex tw-items-center tw-mt-2' id='url'>
+              <div className={`tw-w-4 tw-h-4`}>
+                <Image src={UrlIcon} alt="url" className={` tw-w-full tw-h-auto`} title="url"/>
+              </div>
+              <div className='tw-ml-2 tw-w-full'>
+                <input placeholder="url" className={` tw-pl-1 tw-w-full`}/>
+              </div>
             </div>
           </div>
-          <div className='tw-flex tw-items-center tw-mt-2' id='version'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={VersionIcon} alt="version" className={` tw-w-full tw-h-auto`} title="version"/>
+          {/* <div id="template mod" className={`tw-border-2 tw-border-white tw-ml-4 tw-mb-4 tw-mt-2 tw-px-4 tw-py-4`}>
+            <input type="text" className="tw-border-2 tw-border-white tw-bg-transparent tw-pl-2" onChange={(event) => {setFilterText(event.target.value)}}/>
+            <div>
+              {
+                ModTemplate(extractModDetailDataReturnModList(detail_div_ref))
+              }
             </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="version" className={` tw-pl-1 tw-w-full`}/>
-            </div>
-          </div>
-          <div className='tw-flex tw-items-center tw-mt-2' id='description'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={DescriptionIcon} alt="description" className={` tw-w-full tw-h-auto`} title="description"/>
-            </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="description" className={` tw-pl-1 tw-w-full`}/>
-            </div>
-          </div>
-          <div className='tw-flex tw-items-center tw-mt-2' id='tag'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={TagIcon} alt="tag" className={` tw-w-full tw-h-auto`} title="tag"/>
-            </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="tag" className={` tw-pl-1 tw-w-full`}/>
-            </div>
-          </div>
-          <div className='tw-flex tw-items-center tw-mt-2' id='refFolder'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={FolderIcon} alt="refFolder" className={` tw-w-full tw-h-auto`} title="refFolder"/>
-            </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="refFolder" className={` tw-pl-1 tw-w-full`}/>
-            </div>
-          </div>
-          <div className='tw-flex tw-items-center tw-mt-2' id='url'>
-            <div className={`tw-w-4 tw-h-4`}>
-              <Image src={UrlIcon} alt="url" className={` tw-w-full tw-h-auto`} title="url"/>
-            </div>
-            <div className='tw-ml-2 tw-w-full'>
-              <input placeholder="url" className={` tw-pl-1 tw-w-full`}/>
-            </div>
-          </div>
+          </div> */}
+        {
+          add_type === "Dependency" && (
+            <ModTemplate filterdModList={filterdModList} setFilterText={setFilterText} detail_div_ref={detail_div_ref}/>
+          )
+        }
         </div>
         <div id="button_zone" className={`tw-flex tw-justify-between`}>
           <button className="tw-border-2 tw-border-white tw-px-2" onClick={() => {
@@ -562,8 +581,45 @@ function ModList() {
     )
   }
 
+  // function ModTemplate(mod_search:modList){
+  //   const filter_modListDisplay = modListDisplayState.filter((value) => {value.name.includes(mod_search.name)})
+
+  //   console.log("mod_search",mod_search)
+  //   console.log("filter_modListDisplay",filter_modListDisplay)
+
+  //   return (
+  //     <div className="tw-flex tw-flex-col"> 
+  //       {
+  //         // filter_modListDisplay.map((value,index) => {
+  //           filterdModList.map((value,index) => {
+  //           return (
+  //             <div key={index}>
+  //               {value.name}
+  //             </div>
+  //           )
+  //         })
+  //       }
+  //     </div>
+  //   )
+  // }
+
+  function extractModDetailDataReturnModList(detail_div_ref:RefObject<HTMLDivElement>):modList{
+    if(detail_div_ref.current){
+      const extracted_mod_detail = extractDetailDiv(detail_div_ref,"extractModDetailDataReturnModList")
+      const new_mod:modList = {
+        ...extracted_mod_detail,
+        id:genRandomId(),
+        create_date:new Date().toISOString(),
+      }
+      return new_mod
+    }
+    else{
+      return {name:"",create_date:new Date().toISOString(),id:""}
+    }
+  }
+
   async function extractModDetailDataAndAddNewMod(detail_div_ref:RefObject<HTMLDivElement>){
-    const extracted_mod_detail = extractDetailDiv(detail_div_ref)
+    const extracted_mod_detail = extractDetailDiv(detail_div_ref,"extractModDetailDataAndAddNewMod")
     const new_mod:modList = {
       ...extracted_mod_detail,
       id:genRandomId(),
@@ -576,7 +632,7 @@ function ModList() {
   }
 
   async function extractModDetailDataAndAddNewDependency(detail_div_ref:RefObject<HTMLDivElement>,mod_list_display_data:modListDisplay){
-    const extracted_mod_detail = extractDetailDiv(detail_div_ref)
+    const extracted_mod_detail = extractDetailDiv(detail_div_ref,"extractModDetailDataAndAddNewDependency")
     const new_dependency:modList = {
       ...extracted_mod_detail,
       id:genRandomId(),
@@ -586,7 +642,7 @@ function ModList() {
   }
 
   async function extractModDetailDataAndUpdateModlist(detail_div_ref:RefObject<HTMLDivElement>,mod_list_display_data:modListDisplay){
-    const extracted_mod_detail = extractDetailDiv(detail_div_ref)
+    const extracted_mod_detail = extractDetailDiv(detail_div_ref,"extractModDetailDataAndUpdateModlist")
     const new_mod_list_display:modListDisplay = {
       ...mod_list_display_data,
       ...extracted_mod_detail
@@ -750,7 +806,7 @@ function ModList() {
     }
   }
 
-  function extractDetailDiv(detail_div_ref: RefObject<HTMLDivElement>):mod_detail{
+  function extractDetailDiv(detail_div_ref: RefObject<HTMLDivElement>,function_name:string):mod_detail{
     let mod_detail_data:mod_detail = {
       name:"",
       description:"",
@@ -792,7 +848,7 @@ function ModList() {
       }
     }
     else{
-      console.log("no detail_div_ref")
+      console.log("no detail_div_ref","function",function_name)
       alert("no detail_div_ref")
     }
     return mod_detail_data
