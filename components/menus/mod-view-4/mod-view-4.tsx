@@ -184,7 +184,10 @@ function ModList() {
    * if it include in there meaning it has been set to hidden
    * can add some more condition in the future
    */
-  function checkRenderModListDisplayCondition(mod: modListDisplay){
+  function checkRenderModListDisplayCondition(mod: modListDisplay,isDependency = false){
+    if(isDependency){
+      return true
+    }
     if(mod.tag && mod.tag.some(tag => hiddenTags.includes(tag))){
       return false
     }
@@ -196,9 +199,9 @@ function ModList() {
     return true
   }
 
-  function renderModList(modList: modListDisplay[]) {
+  function renderModList(modList: modListDisplay[],isDependency = false) {
     return modList.map((mod) => {
-      return checkRenderModListDisplayCondition(mod) && (
+      return checkRenderModListDisplayCondition(mod,isDependency) && (
         <div key={mod.id} className={`tw-mb-4`}>
           <div className="tw-flex">
             <div id="main-box">
@@ -355,7 +358,7 @@ function ModList() {
           <div id="renderModList">
           {mod.dependency && mod.dependency.length > 0 && mod.displayDependency && (
             <>
-              <div className={`tw-ml-10`}>{renderModList(mod.dependency)}</div>
+              <div className={`tw-ml-10`}>{renderModList(mod.dependency,true)}</div>
             </>
           )}
           </div>
@@ -549,7 +552,7 @@ function ModList() {
                 <Image src={UrlIcon} alt="url" className={` tw-w-full tw-h-auto`} title="url"/>
               </div>
               <div className='tw-ml-2 tw-w-full'>
-                <input placeholder="url" className={` tw-pl-1 tw-w-full`}/>
+                <input placeholder="url" className={` tw-pl-1 tw-w-full`} onChange={() => {onAddModUrlChange(detail_div_ref)}}/>
               </div>
             </div>
           </div>
@@ -579,6 +582,26 @@ function ModList() {
         </div>
       </div>
     )
+  }
+
+  async function onAddModUrlChange(detail_div_ref: RefObject<HTMLDivElement>){
+    console.log("onAddModUrlChange")
+    console.log("detail_div_ref",detail_div_ref)
+    const childName = detail_div_ref.current?.children[0].children[1].children[0] as HTMLInputElement
+    const childVersion = detail_div_ref.current?.children[1].children[1].children[0] as HTMLInputElement
+    const childDescription = detail_div_ref.current?.children[2].children[1].children[0] as HTMLInputElement
+    const childTag = detail_div_ref.current?.children[3].children[1].children[0] as HTMLInputElement
+    const childUrl = detail_div_ref.current?.children[5].children[1].children[0] as HTMLInputElement
+    // console.log("childUrl.value",childUrl.value)
+    const search_params = new URLSearchParams( { "url":childUrl.value } )
+    const get_url_data = await getRequest("./api/get/web-scraping",search_params)
+    console.log(get_url_data)
+    if(get_url_data.status){
+      childName.value = get_url_data.data.name
+      childVersion.value = get_url_data.data.version
+      childDescription.value = get_url_data.data.desciption
+      childTag.value = get_url_data.data.tag
+    }
   }
 
   // function ModTemplate(mod_search:modList){
@@ -907,7 +930,7 @@ function ModList() {
   }
   
   return <div className="tw-flex tw-flex-col">
-    <ModStatus className="tw-mt-4 tw-flex tw-flex-col" modListDisplayState={modListDisplayState}/>
+    <ModStatus className="tw-mt-4 tw-flex tw-flex-col" modListDisplayState={modListUnEdit}/>
     <div id="add_new_mod" className="-tw-mb-4 tw-mt-4">
       <div>
       {
@@ -936,7 +959,7 @@ function ModList() {
           displaySelectModDisplayModal && (
             <div className="tw-bg-transparent tw-border-2 tw-border-white tw-rounded-md tw-px-2 tw-mr-2 tw-w-2/5">
               <div>tag list</div>
-              <div className="tw-h-32 tw-flex tw-flex-col tw-flex-wrap tw-overflow-auto">
+              <div className="tw-h-32 tw-flex tw-flex-wrap tw-overflow-auto">
               {
                 uniqueTags.map((value,index) => {
                   return value !== "" && (

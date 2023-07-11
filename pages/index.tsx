@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import ModView4 from "../components/menus/mod-view-4/mod-view-4";
 import { select_currentPageState } from "../store/currentPageSlice";
+import FileListDisplay from "../components/menus/file-list/file-list";
 
 export default function Home(){
 
@@ -22,7 +23,7 @@ export default function Home(){
             case "ModList":
                 return (<ModView4></ModView4>)
             case "FileList":
-                return (<div>FileList</div>)
+                return (<FileListDisplay></FileListDisplay>)
             case "ModMenu":
                 return (<div>ModMenu</div>)
             case "Setting":

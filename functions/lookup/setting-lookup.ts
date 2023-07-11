@@ -124,3 +124,17 @@ export async function lookupSettingJson(){
 
   return file_result
 }
+
+export async function readAllFolderName(){
+  try {
+    const path = (await lookupSettingJson()).data.stardew_location + "\\Mods"
+    const files = fs.readdirSync(path);
+    const folders = files.filter((file) =>
+      fs.statSync(`${path}/${file}`).isDirectory()
+    );
+    return folders;
+  } catch (error) {
+    console.error("Error occurred while reading directory:", error);
+    return [];
+  }
+}
